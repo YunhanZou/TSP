@@ -1,0 +1,7 @@
+.idea
+*.xml
+log err
+*.pyc
+src/*.pyc
+src/log
+src/err
