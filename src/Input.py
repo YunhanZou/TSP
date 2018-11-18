@@ -2,9 +2,6 @@ import sys
 import getopt
 import math
 
-import Approximation, BranchAndBound
-
-
 def format_check():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "i:a:t:s:", ["inst=", "alg=", "time=", "seed="])
@@ -155,7 +152,6 @@ def main():
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
-
 
 if __name__ == '__main__':
     main()

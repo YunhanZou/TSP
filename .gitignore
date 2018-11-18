@@ -1,7 +1,9 @@
 .idea
 *.xml
-log err
 *.pyc
 src/*.pyc
 src/log
 src/err
+data_mst/*
+log 
+err
