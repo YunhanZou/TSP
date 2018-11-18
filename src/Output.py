@@ -1,15 +1,8 @@
 class Output(object):
     def __init__(self, inst, method, cutoff, rand_seed=None):
-        self.inst = inst
-        self.method = method
-        self.cutoff = cutoff
-        self.rand_seed = rand_seed
-
         self.path = 'output/' + str(inst) + '_' + str(method) + '_' + str(cutoff)
         if rand_seed:
             self.path += '_' + str(rand_seed)
-
-        self.out_list = []
 
     def solution(self, sol_list):
         self.path += '.sol'
