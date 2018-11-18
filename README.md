@@ -20,10 +20,12 @@ python src/Output.py
 
 ## Run Approx
 install networkx version 2.2 through terminal:
+```
 python -m pip install --upgrade pip
 python -m pip install networkx
+```
 
-Switch mode by modifying src/Approximation.py as follow:
+Switch mode by modifying src/Approximation.py as follow: <br />
 'Flase' To generate outputs:
 (in output folder)
 ```
