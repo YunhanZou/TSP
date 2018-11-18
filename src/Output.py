@@ -1,5 +1,3 @@
-
-
 class Output(object):
     def __init__(self, inst, method, cutoff, rand_seed=None):
         self.inst = inst
