@@ -11,7 +11,7 @@ class Output(object):
         f.write(line1)
 
         vertices = sol_list[1:]
-        line2 = ','.join(str(v) for v in vertices)
+        line2 = ','.join(str(v + 1) for v in vertices)
         f.write(line2)
 
         f.close()
