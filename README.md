@@ -26,13 +26,15 @@ python -m pip install networkx
 ```
 
 Switch mode by modifying src/Approximation.py as follow: <br />
-'Flase' To generate outputs:
-(in output folder)
+'Flase' To generate outputs: 
+(generated in output folder)  <br />
+Make sure in TSP folder
 ```
 ./run_Approx.sh
 ```
 'True' To generate graphs:
-(currently: rel_time vs dim)
+(currently: rel_time vs dim)  <br />
+Make sure in TSP folder
 ```
 python src/Approximation.py
 ```
