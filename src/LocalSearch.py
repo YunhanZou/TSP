@@ -84,6 +84,26 @@ class TwoOpt:
 	def local_search(self):
 		curr_time = int(round(time.time() * 1000))
 		duration = curr_time - self.start_time
+		best_quality = self.eval_path()
+
+
+		# Stop condition：
+		# 1. No improvement can be made.
+		# 2. We are running out of time ... think about how to add this later.
+
+		while self.time_limit - duration > 1:
+			for i in range(0, self.n):
+				for j in range(i+1, self.n + 1):
+					self.swap(i, j)
+					try_quality = self.eval_path()
+					if try_quality < best_quality:
+						best_quality = try_quality
+						break
+
+					
+
+
+
 
 
 def test_initialize():
