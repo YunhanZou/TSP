@@ -14,16 +14,19 @@ Stored as csv file in input folder. (No need to read file when computing, only s
 
 ## Output
 ### Solution files
-File name: <instance>_<method>_<cutoff>[_<random_seed>].sol <br />
+File name: `<instance>_<method>_<cutoff>[_<random_seed>].sol` <br />
 random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
-File format: line1: best quality; line 2: list of vertex IDs of the TSP tour
+File format: <br />
+    - line 1: best quality
+    - line 2: list of vertex IDs of the TSP tour
 
 ### Solution trace files
-File name: <instance>_<method>_<cutoff>[_<random_seed>].trace <br />
+File name: `<instance>_<method>_<cutoff>[_<random_seed>].trace` <br />
 random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
-File format: each line contains timestamp in seconds and quality of the best found solution at that point in time
+File format: <br />
+    - each line contains timestamp in seconds and quality of the best found solution at that point in time
 
-## Run main function
+## Run Main function
 Make sure in TSP folder. In your terminal, type command as following:
 ### GNU
 ```
@@ -68,7 +71,7 @@ python -m pip install networkx
 ```
 
 Switch mode by modifying src/Approximation.py as follow: <br />
-'False' To generate outputs: => to be deleted
+'False' To generate outputs:
 (generated in output folder)  <br />
 Make sure in TSP folder
 ```
