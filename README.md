@@ -2,8 +2,8 @@
 CSE 6140 Final Project
 
 ## Required
-Python version: 2.7
-networkx==2.2
+Python version: 2.7 <br />
+networkx==2.2 <br />
 numpy==1.13.3
 
 ## Data
@@ -14,13 +14,13 @@ Stored as csv file in input folder. (No need to read file when computing, only s
 
 ## Output
 ### Solution files
-File name: <instance>_<method>_<cutoff>[_<random_seed>].sol
-random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2
+File name: <instance>_<method>_<cutoff>[_<random_seed>].sol <br />
+random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
 File format: line1: best quality; line 2: list of vertex IDs of the TSP tour
 
 ### Solution trace files
-File name: <instance>_<method>_<cutoff>[_<random_seed>].trace
-random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2
+File name: <instance>_<method>_<cutoff>[_<random_seed>].trace <br />
+random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
 File format: each line contains timestamp in seconds and quality of the best found solution at that point in time
 
 ## Run main function
