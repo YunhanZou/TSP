@@ -1,8 +1,5 @@
 import numpy as np
 import time
-import copy
-import math
-import sys
 import random
 
 
@@ -30,13 +27,32 @@ class TwoOpt:
 		Time comlexity: Theta(n)
 		Space complexity: Theta(n)
 		"""
-		not_used = set(range(1, self.n))
-		self.path = [0]
+		self.path = []
+		not_used = set(range(0, self.n))
 		while len(not_used) > 0:
 			i = random.sample(not_used, 1)[0]
 			self.path.append(i)
 			not_used.remove(i)
-		self.path.append(0)
+		self.path.append(self.path[0])
+
+
+	def swap(self, i, j):
+		""" 
+		Input: int i, int j, j > i
+		Basic operation of two-opt
+		Breaks two adjacent edges in the path and reconnect after reversing one segment
+		Keep path[0~i-1] in original order
+		Append path[i~j] in reverse order
+		Append path[j+1~] in original order
+		Time complexity: Theta(j-i)=>O(n)
+		Space complexity: O(1) as inplace
+		"""
+		while i < j:
+			temp = self.path[i]
+			self.path[i] = self.path[j]
+			self.path[j] = temp
+			i += 1
+			j -= 1
 
 
 def test_initialize():
@@ -53,6 +69,14 @@ def test_initialize():
 	print topt1.path
 	print topt1.cost_matrix
 
-		
+	return topt1
+
+def test_swap():
+	topt1 = test_initialize()
+	topt1.swap(1, 4)
+	print topt1.path
+
+
+
 if __name__ == "__main__":
-	test_initialize()
+	test_swap()
