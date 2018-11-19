@@ -10,7 +10,7 @@ class Output(object):
     def solution(self, sol_list):
         self.path += '.sol'
         f = open(self.path, 'w')
-        line1 = str(sol_list[0]) + '\n'
+        line1 = str(int(sol_list[0])) + '\n'
         f.write(line1)
 
         vertices = sol_list[1:]
@@ -23,7 +23,7 @@ class Output(object):
         self.path += '.trace'
         f = open(self.path, 'w')
         for trace in sol_trace_list:
-            line = str(trace[0]) + ',' + str(trace[1]) + '\n'
+            line = str(trace[0]) + ',' + str(int(trace[1])) + '\n'
             f.write(line)
         f.close()
 
