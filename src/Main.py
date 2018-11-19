@@ -1,7 +1,7 @@
 from Input import format_check, parse_input, adjacency_mat, write_adj_mat_file
 from Output import Output
 from Approximation import compute
-from BranchNBound import BranchNBound, print_path
+from BranchNBound import BranchNBound
 import numpy as np
 import time
 
@@ -26,12 +26,10 @@ def main():
         cost_matrix = np.array(adj_mat)  # convert to numpy array
 
         bnb = BranchNBound(cost_matrix, dim, cut_off_sec)  # param: dist_matrix, num_city, time_limit
-        path = bnb.run_branch_and_bound()
+        path, cost, quality = bnb.run_branch_and_bound()
 
-        best_quality = 10000000  # TODO: need return value here
-        output.solution([best_quality] + path)  # generate solution file
-
-        # print_path(path)
+        output.solution([cost] + path)  # generate solution file
+        output.sol_trace([(quality, cost)])  # generate solution trace file
 
 
 if __name__ == '__main__':
