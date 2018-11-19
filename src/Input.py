@@ -99,13 +99,14 @@ def euc_2d(coord1, coord2):
 
 
 def covert_radian(x, y):
-    PI = 3.141592653
+    PI = 3.141592
     deg_x, deg_y = int(x), int(y)
     # print deg_x, deg_y
     min_x, min_y = x - deg_x, y - deg_y
     # print min_x, min_y
-    latitude = PI * (deg_x + 5.0 * min_x / 30.) / 180.
-    longitude = PI * (deg_y + 5.0 * min_y / 30.) / 180.
+    latitude = PI * (deg_x + 5.0 * min_x / 3.) / 180.
+    longitude = PI * (deg_y + 5.0 * min_y / 3.) / 180.
+    # print latitude, longitude
 
     return latitude, longitude
 
@@ -113,12 +114,17 @@ def covert_radian(x, y):
 def geo(coord1, coord2):
     lat1, long1 = coord1
     lat2, long2 = coord2
+    # print
+    # print lat1, long1
+    # print lat2, long2
 
     RRR = 6378.388
     q1 = math.cos(long1 - long2)
     q2 = math.cos(lat1 - lat2)
     q3 = math.cos(lat1 + lat2)
     dist = int(RRR * math.acos(0.5 * ((1. + q1) * q2 - (1. - q1) * q3)) + 1.)
+    # print
+    # print RRR * math.acos(0.5 * ((1. + q1) * q2 - (1. - q1) * q3)) + 1., dist
 
     return dist
 
