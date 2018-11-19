@@ -1,5 +1,5 @@
 
 for filename in DATA/*.tsp; do
     # echo $filename
-    python src/Approximation.py -i $filename -a Approx -t 0
+    python src/Main.py --inst $filename --alg Approx --time 0
 done

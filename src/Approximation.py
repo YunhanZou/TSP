@@ -99,7 +99,7 @@ if __name__ == "__main__":
             adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
             k = 10
-            cut_off_sec = 1 # todo
+            cut_off_sec = 1  # todo
             start_MST = time.time()
 
             for i in range(k):
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         output = Output(filename, algorithm, cut_off_sec)
 
         start_MST = time.time()
-        c, tour = compute(dim, adj_mat) # todo cut_off_sec
+        c, tour = compute(dim, adj_mat)  # todo cut_off_sec
         end_MST = time.time()
 
         output.solution([c] + tour)

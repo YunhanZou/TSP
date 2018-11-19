@@ -2,6 +2,7 @@ import sys
 import getopt
 import math
 
+
 def format_check():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "i:a:t:s:", ["inst=", "alg=", "time=", "seed="])
@@ -18,6 +19,10 @@ def format_check():
     filename, algorithm, cut_off_sec, random_seed = None, None, None, None
     for opt, arg in opts:
         if opt in ("-i", "--inst"):
+            dir, file = arg.split("/")
+            assert dir == "DATA", "Please provide correct path"
+            inst, suffix = file.split(".")
+            assert suffix == "tsp", "Please provide correct tsp file"
             filename = arg
         elif opt in ("-a", "--alg"):
             if arg not in algo_list:
@@ -146,6 +151,16 @@ def adjacency_mat(dim, edge_weight_type, coord):
             # print adj_mat[i]
 
     return adj_mat
+
+
+def write_adj_mat_file(adj_mat, city, dim):
+    path = 'input/'
+    name = 'mat_' + str(city) + '_' + str(dim) + '.csv'
+    f = open(path + name, 'w')
+    for l in adj_mat:
+        line = ','.join(str(l[i]) for i in range(dim)) + '\n'
+        f.write(line)
+    f.close()
 
 
 def main():

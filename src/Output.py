@@ -1,5 +1,8 @@
 class Output(object):
-    def __init__(self, inst, method, cutoff, rand_seed=None):
+    def __init__(self, filename, method, cutoff, rand_seed=None):
+        dir, filename = filename.split("/")
+        inst, suffix = filename.split(".")
+        # print inst
         self.path = 'output/' + str(inst) + '_' + str(method) + '_' + str(cutoff)
         if rand_seed:
             self.path += '_' + str(rand_seed)
@@ -11,7 +14,7 @@ class Output(object):
         f.write(line1)
 
         vertices = sol_list[1:]
-        line2 = ','.join(str(v) for v in vertices)
+        line2 = ','.join(str(v + 1) for v in vertices)
         f.write(line2)
 
         f.close()
