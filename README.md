@@ -43,7 +43,7 @@ python src/Main.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_sec
 ```
 Example running .tsp with local search 1 algorithm with cutoff time 100 seconds with random seed 12345:
 ```
-python src/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --t 100 -s 12345
+python src/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
 ```
 
 ## Run input sample
