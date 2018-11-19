@@ -66,7 +66,10 @@ def parse_input(f_name):
         head, val = lines[i].split(':')
         # print head, val
         if head == 'NAME':
-            city = val.lstrip()
+            if val.lstrip() == 'ulysses16.tsp':
+                city = 'ulysses'
+            else:
+                city = val.lstrip()
         elif head == 'DIMENSION':
             dim = int(val.lstrip())
         elif head == 'EDGE_WEIGHT_TYPE':
