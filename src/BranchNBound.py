@@ -61,8 +61,11 @@ class BranchNBound:
 
                 # A solution is found
                 if np.all(reduced_matrix == float('inf')):
+                    # print('A solution is found, the cost_so_far is ' + str(cost_so_far))
+                    print_path(path_so_far)
                     if cost_so_far < self.upper_bound:
                         self.upper_bound = cost_so_far
+                        print(cost_so_far)
                         self.best_path = path_so_far
                         self.best_soln_quality = duration
 
@@ -76,12 +79,13 @@ class BranchNBound:
                     reduced_mat_copy[next_idx, 0] = float('inf')  # cannot go back to start point
                     cost, new_reduced_mat = reduce_matrix(reduced_mat_copy)
                     new_cost = cost_so_far + cost + reduced_matrix[curr_node_idx, next_idx]
+                    # print('The new_cost is ' + str(new_cost))
 
                     # Bound
                     if new_cost < self.upper_bound:
                         path_copy.append(next_idx)
                         visited_copy.add(next_idx)
-                        content = Node(reduced_mat_copy, new_cost, path_copy, visited_copy)
+                        content = Node(new_reduced_mat, new_cost, path_copy, visited_copy)
                         next_node = new_cost, content
                         self.pq.append(next_node)
 
@@ -130,61 +134,75 @@ def print_path(path):
     print('\n')
 
 
-"""For debugging purpose"""
 if __name__ == "__main__":
 
-    cost_matrix = np.array([[0, 20, 30, 10, 11],
-                            [15, 0, 16, 4, 2],
-                            [3, 5, 0, 2, 4],
-                            [19, 6, 18, 0, 3],
-                            [16, 4, 7, 16, 0]])
+    # cost_matrix = np.array([[0, 20, 30, 10, 11],
+    #                         [15, 0, 16, 4, 2],
+    #                         [3, 5, 0, 2, 4],
+    #                         [19, 6, 18, 0, 3],
+    #                         [16, 4, 7, 16, 0]])
 
-    time_limit = 1
-    bnb1 = BranchNBound(cost_matrix, 5, time_limit)
-    path1, cost1, quality1 = bnb1.run_branch_and_bound()
+    # time_limit = 600  # 10 min
+    # bnb1 = BranchNBound(cost_matrix, 5, time_limit)
+    # path1, cost1, quality1 = bnb1.run_branch_and_bound()
 
-    print_path(path1)  # 0 -> 3 -> 1 -> 4 -> 2 -> 0
+    # print_path(path1)  # 0 -> 3 -> 1 -> 4 -> 2 -> 0
     # print(cost1)
     # print(quality1)
 
-    cost_matrix = np.array([[0, 16, 45, 14, 22],
-                            [16, 0, 18, 11, 4],
-                            [45, 18, 0, 19, 23],
-                            [14, 11, 19, 0, 7],
-                            [22, 4, 23, 7, 0]])
+    # cost_matrix = np.array([[0, 16, 45, 14, 22],
+    #                         [16, 0, 18, 11, 4],
+    #                         [45, 18, 0, 19, 23],
+    #                         [14, 11, 19, 0, 7],
+    #                         [22, 4, 23, 7, 0]])
 
-    bnb2 = BranchNBound(cost_matrix, 5, time_limit)
-    path2, cost2, quality2 = bnb2.run_branch_and_bound()
+    # bnb2 = BranchNBound(cost_matrix, 5, time_limit)
+    # path2, cost2, quality2 = bnb2.run_branch_and_bound()
 
-    print_path(path2)  # 0 -> 4 -> 1 -> 2 -> 3 -> 0
+    # print_path(path2)  # 0 -> 4 -> 1 -> 2 -> 3 -> 0
 
-    cost_matrix = np.array([[0, 140, 100, 80],
-                            [140, 0, 90, 69],
-                            [100, 90, 0, 50],
-                            [80, 69, 50, 0]])
+    # cost_matrix = np.array([[0, 140, 100, 80],
+    #                         [140, 0, 90, 69],
+    #                         [100, 90, 0, 50],
+    #                         [80, 69, 50, 0]])
 
-    bnb3 = BranchNBound(cost_matrix, 4, time_limit)
-    path3, cost3, quality3 = bnb3.run_branch_and_bound()
+    # bnb3 = BranchNBound(cost_matrix, 4, time_limit)
+    # path3, cost3, quality3 = bnb3.run_branch_and_bound()
 
-    print_path(path3)  # 0 -> 2 -> 1 -> 3 -> 0
+    # print_path(path3)  # 0 -> 2 -> 1 -> 3 -> 0
 
-    cost_matrix = np.array([[0.0, 3.0, 4.0, 2.0, 7.0],
-                            [3.0, 0.0, 4.0, 6.0, 3.0],
-                            [4.0, 4.0, 0.0, 5.0, 8.0],
-                            [2.0, 6.0, 5.0, 0.0, 6.0],
-                            [7.0, 3.0, 8.0, 6.0, 0.0]])
-    bnb4 = BranchNBound(cost_matrix, 4, time_limit)
+    # cost_matrix = np.array([[0.0, 3.0, 4.0, 2.0, 7.0],
+    #                         [3.0, 0.0, 4.0, 6.0, 3.0],
+    #                         [4.0, 4.0, 0.0, 5.0, 8.0],
+    #                         [2.0, 6.0, 5.0, 0.0, 6.0],
+    #                         [7.0, 3.0, 8.0, 6.0, 0.0]])
+    # bnb4 = BranchNBound(cost_matrix, 5, time_limit)
+    # path4, cost4, quality4 = bnb4.run_branch_and_bound()
 
+    # print_path(path4)
+    # print(cost4)
 
+    # cost_matrix = np.array([[0, 10, 15, 20], [10, 0, 35, 25], [15, 35, 0, 30], [20, 25, 30, 0]])
+    # bnb5 = BranchNBound(cost_matrix, 4, time_limit)
+    # path5, cost5, quality5 = bnb5.run_branch_and_bound()
+    # print_path(path5)
+    # print(cost5)
 
-    file_name = "../DATA/ulysses16.tsp"
-    city, dim, edge_weight_type, coord = parse_input(file_name)
+    # file_name = "../DATA/Cincinnati.tsp"
+    # city, dim, edge_weight_type, coord = parse_input(file_name)
+    # adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+
+    # bnb_Atlanta = BranchNBound(adj_mat, dim, 600)
+
+    # path_atl, cost_atl, quality_atl = bnb_Atlanta.run_branch_and_bound()
+
+    filename, algorithm, cut_off_sec, random_seed = format_check()
+    city, dim, edge_weight_type, coord = parse_input(filename)
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
-    bnb_Atlanta = BranchNBound(adj_mat, dim, 600)
-
+    output = Output(filename, algorithm, cut_off_sec)
+    bnb_Atlanta = BranchNBound(adj_mat, dim, cut_off_sec)
     path_atl, cost_atl, quality_atl = bnb_Atlanta.run_branch_and_bound()
 
-    print(path_atl)
-    print(cost_atl)
-    print(quality_atl)
+    output.solution([cost_atl] + path_atl)
+    output.sol_trace([(quality_atl, cost_atl)])
