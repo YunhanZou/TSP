@@ -6,6 +6,8 @@ import sys
 
 from PriorityQueue import PriorityQueue
 from Node import Node
+from Output import Output
+from Input import format_check, parse_input, adjacency_mat
 
 
 class BranchNBound:
@@ -17,7 +19,8 @@ class BranchNBound:
         self.upper_bound = float('inf')
         self.best_path = []
         self.start_time = int(round(time.time() * 1000))
-        self.time_limit = time_limit * 60 * 1000  # time limit in millisec
+        self.time_limit = time_limit * 1000  # time limit in millisec
+        self.best_soln_quality = 0.0
 
         self.preprocess_cost_matrix()  # Set diagonal elements to infinity
 
@@ -61,6 +64,7 @@ class BranchNBound:
                     if cost_so_far < self.upper_bound:
                         self.upper_bound = cost_so_far
                         self.best_path = path_so_far
+                        self.best_soln_quality = duration
 
                 # Branch
                 for next_idx in neighbors:
@@ -81,9 +85,13 @@ class BranchNBound:
                         next_node = new_cost, content
                         self.pq.append(next_node)
 
+            # Update timer
+            curr_time = int(round(time.time() * 1000))
+            duration = curr_time - self.start_time
+
         self.best_path.append(0)
 
-        return self.best_path
+        return self.best_path, self.upper_bound, self.best_soln_quality/1000.0
 
 
 def reduce_matrix(reduced_matrix):
@@ -133,9 +141,11 @@ if __name__ == "__main__":
 
     time_limit = 1
     bnb1 = BranchNBound(cost_matrix, 5, time_limit)
-    path1 = bnb1.run_branch_and_bound()
+    path1, cost1, quality1 = bnb1.run_branch_and_bound()
 
     print_path(path1)  # 0 -> 3 -> 1 -> 4 -> 2 -> 0
+    # print(cost1)
+    # print(quality1)
 
     cost_matrix = np.array([[0, 16, 45, 14, 22],
                             [16, 0, 18, 11, 4],
@@ -144,7 +154,7 @@ if __name__ == "__main__":
                             [22, 4, 23, 7, 0]])
 
     bnb2 = BranchNBound(cost_matrix, 5, time_limit)
-    path2 = bnb2.run_branch_and_bound()
+    path2, cost2, quality2 = bnb2.run_branch_and_bound()
 
     print_path(path2)  # 0 -> 4 -> 1 -> 2 -> 3 -> 0
 
@@ -154,6 +164,27 @@ if __name__ == "__main__":
                             [80, 69, 50, 0]])
 
     bnb3 = BranchNBound(cost_matrix, 4, time_limit)
-    path3 = bnb3.run_branch_and_bound()
+    path3, cost3, quality3 = bnb3.run_branch_and_bound()
 
     print_path(path3)  # 0 -> 2 -> 1 -> 3 -> 0
+
+    cost_matrix = np.array([[0.0, 3.0, 4.0, 2.0, 7.0],
+                            [3.0, 0.0, 4.0, 6.0, 3.0],
+                            [4.0, 4.0, 0.0, 5.0, 8.0],
+                            [2.0, 6.0, 5.0, 0.0, 6.0],
+                            [7.0, 3.0, 8.0, 6.0, 0.0]])
+    bnb4 = BranchNBound(cost_matrix, 4, time_limit)
+
+
+
+    file_name = "../DATA/ulysses16.tsp"
+    city, dim, edge_weight_type, coord = parse_input(file_name)
+    adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+
+    bnb_Atlanta = BranchNBound(adj_mat, dim, 600)
+
+    path_atl, cost_atl, quality_atl = bnb_Atlanta.run_branch_and_bound()
+
+    print(path_atl)
+    print(cost_atl)
+    print(quality_atl)
