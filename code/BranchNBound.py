@@ -18,8 +18,9 @@ class BranchNBound:
         self.n = num_city
         self.upper_bound = float('inf')
         self.best_path = []
-        self.start_time = int(round(time.time() * 1000))
+        # self.start_time = int(round(time.time() * 1000))
         self.time_limit = time_limit * 1000  # time limit in millisec
+        # print('self.time_limit = ' + str(self.time_limit))
         self.best_soln_quality = 0.0
 
         self.preprocess_cost_matrix()  # Set diagonal elements to infinity
@@ -43,8 +44,9 @@ class BranchNBound:
     def run_branch_and_bound(self):
         """Body of branch and bound, return the best solution within time limit."""
 
-        curr_time = int(round(time.time() * 1000))
-        duration = curr_time - self.start_time
+        start_time = int(round(time.time() * 1000))
+        print('The start time is ' + str(start_time) + '. The time limit is ' + str(self.time_limit))
+        duration = 0
 
         while not self.pq.is_empty() and duration < self.time_limit:
             _, content = self.pq.pop()
@@ -61,8 +63,7 @@ class BranchNBound:
 
                 # A solution is found
                 if np.all(reduced_matrix == float('inf')):
-                    # print('A solution is found, the cost_so_far is ' + str(cost_so_far))
-                    print_path(path_so_far)
+                    print('A solution is found.')
                     if cost_so_far < self.upper_bound:
                         self.upper_bound = cost_so_far
                         print(cost_so_far)
@@ -91,7 +92,7 @@ class BranchNBound:
 
             # Update timer
             curr_time = int(round(time.time() * 1000))
-            duration = curr_time - self.start_time
+            duration = curr_time - start_time
 
         self.best_path.append(0)
 
@@ -201,8 +202,12 @@ if __name__ == "__main__":
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
     output = Output(filename, algorithm, cut_off_sec)
-    bnb_Atlanta = BranchNBound(adj_mat, dim, cut_off_sec)
-    path_atl, cost_atl, quality_atl = bnb_Atlanta.run_branch_and_bound()
+    bnb = BranchNBound(adj_mat, dim, cut_off_sec)
+    path, cost, quality = bnb.run_branch_and_bound()
 
-    output.solution([cost_atl] + path_atl)
-    output.sol_trace([(quality_atl, cost_atl)])
+    print_path(path)
+    # print('The cost is ', cost)
+    # print('The quality is ', quality)
+
+    output.solution([cost] + path)
+    output.sol_trace([(quality, cost)])

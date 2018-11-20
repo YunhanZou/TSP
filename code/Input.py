@@ -42,7 +42,7 @@ def format_check():
         print 'format: \nInput.py -inst <filename> -alg [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]'
         sys.exit(2)
 
-    return filename, algorithm, cut_off_sec, random_seed
+    return filename, algorithm, float(cut_off_sec), random_seed
 
 
 def parse_input(f_name):

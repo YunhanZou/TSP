@@ -23,7 +23,7 @@ class Output(object):
         self.path += '.trace'
         f = open(self.path, 'w')
         for trace in sol_trace_list:
-            line = str(trace[0]) + ',' + str(int(trace[1])) + '\n'
+            line = str(trace[0]) + ', ' + str(int(trace[1])) + '\n'
             f.write(line)
         f.close()
 
