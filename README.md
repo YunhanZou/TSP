@@ -30,37 +30,37 @@ File format: <br />
 Make sure in TSP folder. In your terminal, type command as following:
 ### GNU
 ```
-python src/Main.py --inst <filename> --alg [BnB | Approx | LS1 | LS2] --time <cutoff_in_seconds> [--seed <random_seed>]
+python code/Main.py --inst <filename> --alg [BnB | Approx | LS1 | LS2] --time <cutoff_in_seconds> [--seed <random_seed>]
 ```
 Example running Boston.tsp with MST approximation algorithm with cutoff time 100 seconds:
 ```
-python src/Main.py --inst DATA/Boston.tsp --alg Approx --time 100
+python code/Main.py --inst DATA/Boston.tsp --alg Approx --time 100
 ```
 
 ### Unix
 ```
-python src/Main.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_seconds> [-s <random_seed>]
+python code/Main.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_seconds> [-s <random_seed>]
 ```
 Example running .tsp with local search 1 algorithm with cutoff time 100 seconds with random seed 12345:
 ```
-python src/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
+python code/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
 ```
 
 ## Run input sample
 Make sure in TSP folder. In your terminal, type command as following:
 ### GNU
 ```
-python src/Input.py --inst <filename> --alg [BnB | Approx | LS1 | LS2] --time <cutoff_in_seconds> [--seed <random_seed>]
+python code/Input.py --inst <filename> --alg [BnB | Approx | LS1 | LS2] --time <cutoff_in_seconds> [--seed <random_seed>]
 ```
 ### Unix
 ```
-python src/Input.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_seconds> [-s <random_seed>]
+python code/Input.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_seconds> [-s <random_seed>]
 ```
 
 ## Run output sample
 Make sure in TSP folder. In your terminal, type command as following:
 ```
-python src/Output.py
+python code/Output.py
 ```
 
 ## Run Approx
@@ -70,7 +70,7 @@ python -m pip install --upgrade pip
 python -m pip install networkx
 ```
 
-Switch mode by modifying src/Approximation.py as follow: <br />
+Switch mode by modifying code/Approximation.py as follow: <br />
 'False' To generate outputs:
 (generated in output folder)  <br />
 Make sure in TSP folder
@@ -81,5 +81,5 @@ Make sure in TSP folder
 (currently: rel_time vs dim)  <br />
 Make sure in TSP folder
 ```
-python src/Approximation.py
+python code/Approximation.py
 ```

@@ -2,8 +2,8 @@ class Output(object):
     def __init__(self, filename, method, cutoff, rand_seed=None):
         dir, filename = filename.split("/")
         inst, suffix = filename.split(".")
-        # print inst
-        self.path = 'output/' + str(inst) + '_' + str(method) + '_' + str(cutoff)
+        # print inst, method, cutoff
+        self.path = 'output/' + str(inst) + '_' + str(method) + '_' + str(int(cutoff))
         if rand_seed:
             self.path += '_' + str(rand_seed)
 
