@@ -8,14 +8,16 @@ class TwoOpt:
     Class to implement Two-opt Exchange Local Search Algorithm
     """
 
-    def __init__(self, dist_matrix, num_city, time_limit):
+    def __init__(self, dist_matrix, num_city, time_limit = 10, random_seed = 0):
         """
         Input:
             dist_matrix: np.array that contains distances between cities
             num_city: total number of cities
-            time_limit: time_limit
+            time_limit: time_limit in minutes
+            random_seed: random seed
         Output: None
         """
+        random.seed(random_seed)
         self.dist_matrix = np.asarray(dist_matrix, dtype='float')
         self.n = num_city
         self.start_time = int(round(time.time() * 1000))
