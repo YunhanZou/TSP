@@ -31,7 +31,7 @@ class TwoOpt:
         """
         np.fill_diagonal(self.dist_matrix, float('inf'))
 
-    def generate_initial_path(self):
+    def generate_initial_path(self, start_point = 0):
         """
         Input: None
         Output: None
@@ -39,8 +39,9 @@ class TwoOpt:
         Time complexity: Theta(n)
         Space complexity: Theta(n)
         """
-        self.path = []
+        self.path = [start_point]
         not_used = set(range(0, self.n))
+        not_used.remove(start_point)
         while len(not_used) > 0:
             i = random.sample(not_used, 1)[0]
             self.path.append(i)
@@ -98,6 +99,7 @@ class TwoOpt:
         # print self.path[j], self.path[j+1], self.dist_matrix[self.path[j]][self.path[j+1]]
         # print self.path[i-1], self.path[j], self.dist_matrix[self.path[i-1]][self.path[j]]
         # print self.path[i], self.path[j+1], self.dist_matrix[self.path[i]][self.path[j+1]]
+        # print old_quality, i, j
         new_quality = old_quality
         new_quality -= self.dist_matrix[self.path[i-1]][self.path[i]]
         new_quality -= self.dist_matrix[self.path[j]][self.path[j+1]]
@@ -124,7 +126,7 @@ class TwoOpt:
 
         while self.time_limit - duration > 1:
             can_improve = False
-            for i in range(0, self.n-1):
+            for i in range(1, self.n-1):
                 for j in range(i + 1, self.n):
                     try_quality = self.eval_try_path(best_quality, i, j)
                     if try_quality < best_quality:
