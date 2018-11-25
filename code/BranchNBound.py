@@ -184,7 +184,7 @@ if __name__ == "__main__":
     # print(cost4)
 
     # cost_matrix = np.array([[0, 10, 15, 20], [10, 0, 35, 25], [15, 35, 0, 30], [20, 25, 30, 0]])
-    # bnb5 = BranchNBound(cost_matrix, 4, time_limit)
+    # bnb5 = BranchNBound(cost_matrix, 4, 5)
     # path5, cost5, quality5 = bnb5.run_branch_and_bound()
     # print_path(path5)
     # print(cost5)
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     bnb = BranchNBound(adj_mat, dim, cut_off_sec)
     path, cost, quality = bnb.run_branch_and_bound()
 
-    print_path(path)
+    # print_path(path)
     # print('The cost is ', cost)
     # print('The quality is ', quality)
 

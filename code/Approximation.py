@@ -13,12 +13,10 @@ import time
 import os
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
-import multiprocessing
-from threading import Thread, Event
 
 
 # O(m log n) todo O(n^2)
-def computeMST(g):
+def computeMST_nx(g):
 
     # binary heap - O(m log n)
     t = nx.minimum_spanning_tree(g, algorithm='prim')
@@ -32,7 +30,7 @@ def computeMST(g):
 
 
 # max[O(n^2), O(computeMST)]
-def compute(d, input):
+def compute_nx(d, input):
 
     for i in range(d):
         input[i][i] = 0
@@ -42,7 +40,7 @@ def compute(d, input):
     # O(n^2)
     g = nx.from_numpy_matrix(m)
 
-    t = computeMST(g)
+    t = computeMST_nx(g)
     assert d == len(t.nodes)
 
     # O(n * .) = O(n^2)
@@ -61,6 +59,63 @@ def compute(d, input):
         break
 
     return c, tour
+
+
+# O(d^2)
+def MST(d, input, root):
+
+    mst = np.zeros(d)
+    mst[root] = root
+
+    a = np.ones(d) * sys.maxint
+
+    visited = np.zeros(d)
+    visited[root] = 1
+
+    while not np.all(visited):
+        u = np.argmin(a)
+        visited[u] = 1
+        a[u] = sys.maxint
+
+        for v in range(d):
+            if not visited[v] and input[u][v] < a[v]:
+                a[v] = input[u][v]
+                mst[v] = u
+
+    return mst
+
+# O(d^2)
+def DFS(d, mst, root):
+    assert len(mst) == d
+    assert mst[root] == root
+
+    tsp = []
+    stack = [root]
+    visited = np.zeros(d)
+    visited[root] = 1
+
+    while len(stack):
+        cur = stack.pop()
+        tsp.append(cur)
+
+        for i in range(d):
+            if not visited[i] and mst[i] == cur:
+                stack.append(i)
+                visited[i] = 1
+
+    tsp.append(root)
+    return tsp
+
+# O(d^2)
+def compute(d, input):
+
+    root = 0
+
+    mst = MST(d, input, root)
+    tsp = DFS(d, mst, root)
+    c = np.sum([input[tsp[i]][tsp[i + 1]] for i in range(d)])
+
+    return c, tsp
 
 
 if __name__ == "__main__":
@@ -97,25 +152,21 @@ if __name__ == "__main__":
 
             city, dim, edge_weight_type, coord = parse_input(filename)
             adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+            print city
 
             k = 10
-            cut_off_sec = 1  # todo
             start_MST = time.time()
-
             for i in range(k):
-                thread = Thread(target=compute, args=(dim, adj_mat))
-                thread.start()
-                thread.join(timeout=cut_off_sec)
-                # assert not thread.is_alive()
-
+                # compute_nx(dim, adj_mat)
+                c, tour = compute(dim, adj_mat)
+                # print c, tour
             end_MST = time.time()
             total_time = (end_MST - start_MST)
 
-            print city
             print total_time / k
 
             dims.append(dim)
-            rel_times.append(total_time / (dim * dim * np.log(dim)))
+            rel_times.append(total_time / (dim * dim))
             rel_dists.append(np.average(adj_mat) / np.std(adj_mat))
 
         rel_times = np.array(rel_times)
