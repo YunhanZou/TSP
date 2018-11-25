@@ -2,18 +2,20 @@ import numpy as np
 import time
 import random
 
+from Output import Output
+from Input import format_check, parse_input, adjacency_mat
 
 class TwoOpt:
     """
     Class to implement Two-opt Exchange Local Search Algorithm
     """
 
-    def __init__(self, dist_matrix, num_city, time_limit = 10, random_seed = 0):
+    def __init__(self, dist_matrix, num_city, time_limit = 6000, random_seed = 0):
         """
         Input:
             dist_matrix: np.array that contains distances between cities
             num_city: total number of cities
-            time_limit: time_limit in minutes
+            time_limit: time_limit in seconds
             random_seed: random seed
         Output: None
         """
@@ -21,7 +23,7 @@ class TwoOpt:
         self.dist_matrix = np.asarray(dist_matrix, dtype='float')
         self.n = num_city
         self.start_time = int(round(time.time() * 1000))
-        self.time_limit = time_limit * 60 * 1000
+        self.time_limit = time_limit * 1000
         self.preprocess_dist_matrix()
         self.generate_initial_path()
 
@@ -127,6 +129,8 @@ class TwoOpt:
         # 2. We are running out of time 
 
         while self.time_limit - duration > 1:
+            curr_time = int(round(time.time() * 1000))
+            duration = curr_time - self.start_time
             can_improve = False
             for i in range(1, self.n-1):
                 for j in range(i + 1, self.n):
@@ -141,7 +145,40 @@ class TwoOpt:
             if not can_improve:
                 break
 
-        return best_quality, self.path, duration
+        return self.path, best_quality, duration
+
+
+class IteratedLocalSearch:
+    """
+    Wraper of TwoOpt to perform iterated local search using four bridge move
+    """
+    def __init__(self, dist_matrix, num_city, time_limit = 10, random_seed = 0):
+        """
+        Input:
+            dist_matrix: np.array that contains distances between cities
+            num_city: total number of cities
+            time_limit: time_limit in minutes
+            random_seed: random seed
+        Output: None
+        """
+        self.twoopt = TwoOpt(dist_matrix, num_city, time_limit, random_seed)
+
+    def double_bridge_perturbation(self):
+        """
+        Input: None
+        Output: None
+        Break current path into four segments using three random chosen points
+        Use double bridge move to perturbate current path
+        """
+        print self.twoopt.path
+        print self.twoopt.n
+        n = self.twoopt.n
+        b1 = random.randint(1, n-4)
+        b2 = random.randint(b1, n-3)
+        b3 = random.randint(b2, n-2)
+        print b1, b2, b3
+
+
 
 def test_initialize():
     dist_matrix = np.array([[0, 20, 30, 10, 11],
@@ -180,6 +217,35 @@ def test_two_opt():
     topt1 = test_initialize()
     print topt1.two_opt()
 
+def test_ils():
+    dist_matrix = np.array([[0, 20, 30, 10, 11],
+                            [20, 0, 16, 4, 2],
+                            [30, 16, 0, 2, 4],
+                            [10, 4, 2, 0, 3],
+                            [11, 2, 4, 3, 0]])
+
+    time_limit = 1
+
+    random_seed = 10
+
+    ils1 = IteratedLocalSearch(dist_matrix, 5, time_limit, random_seed)
+    ils1.double_bridge_perturbation()
+
+
+def test_io():
+    filename = "DATA/Cincinnati.tsp"
+    city, dim, edge_weight_type, coord = parse_input(filename)
+    adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+    algorithm = "TwoOpt"
+    cut_off_sec = 10
+
+
+    output = Output(filename, algorithm, cut_off_sec)
+    to = TwoOpt(adj_mat, dim, cut_off_sec)
+    path, cost, quality = to.two_opt()
+
+    output.solution([cost] + path)
+    output.sol_trace([(quality, cost)])
 
 if __name__ == "__main__":
-    test_two_opt()
+    test_io()
