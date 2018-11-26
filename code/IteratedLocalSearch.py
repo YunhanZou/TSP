@@ -27,6 +27,17 @@ class TwoOpt:
         self.preprocess_dist_matrix()
         self.generate_initial_path()
 
+    def get_duration(self):
+        """
+        Input: None
+        Output: int duration
+        Calculate duration that this algorithm took so far
+        """
+        curr_time = int(round(time.time() * 1000))
+        duration = curr_time - self.start_time
+        return duration
+
+
     def preprocess_dist_matrix(self):
         """
         Input: None
@@ -119,8 +130,7 @@ class TwoOpt:
         Terminate when no improvement can be made, or no time left.
         Note that this method might get stuck in local minimum.
         """
-        curr_time = int(round(time.time() * 1000))
-        duration = curr_time - self.start_time
+        duration = self.get_duration()
         best_quality = self.eval_initial_path()
         try_quality = best_quality
 
@@ -129,8 +139,6 @@ class TwoOpt:
         # 2. We are running out of time 
 
         while self.time_limit - duration > 1:
-            curr_time = int(round(time.time() * 1000))
-            duration = curr_time - self.start_time
             can_improve = False
             for i in range(1, self.n-1):
                 for j in range(i + 1, self.n):
@@ -141,8 +149,10 @@ class TwoOpt:
                         can_improve = True
                         break
                 if can_improve:
+                    duration = self.get_duration()
                     break
             if not can_improve:
+                duration = self.get_duration()
                 break
 
         return self.path, best_quality, duration
@@ -170,16 +180,63 @@ class IteratedLocalSearch:
         Break current path into four segments using three random chosen points
         Use double bridge move to perturbate current path
         """
-        print self.twoopt.path
-        print self.twoopt.n
+        # print self.twoopt.path
+        # print self.twoopt.n
+        path = self.twoopt.path
         n = self.twoopt.n
-        b1 = random.randint(1, n-4)
-        b2 = random.randint(b1, n-3)
-        b3 = random.randint(b2, n-2)
-        print b1, b2, b3
+        b1 = random.randint(0, n-4)
+        b2 = random.randint(b1+1, n-3)
+        b3 = random.randint(b2+1, n-2)
+        # print b1, b2, b3
+        s1 = path[0:b1+1]
+        s2 = path[b1+1:b2+1]
+        s3 = path[b2+1:b3+1]
+        s4 = path[b3+1:-1]
+        # print s1, s2, s3, s4
+        new_path = s1+s4+s3+s2+[path[0]]
+        # print new_path
+        self.twoopt.path = new_path
+
+    def iterated_local_search(self, prob = 1, decay = 0.9999):
+        """
+        Input:
+            prob: flaot, the probability to start next pertubation
+            decay: decay rate of probability
+        Output:
+            path, cost, duration
+        Body of iterated local search, which adapts the idea of simulate annealing.
+        The probability of "whether I should pertubate and local search once more" is decided by prob.
+        For every pertubation that does not improve the solution, decay the probability.
+        """
+
+        # Perform local search once to get the first best path
+        best_path, best_cost, duration = self.twoopt.two_opt()
+        count = 1
 
 
+        # Iteratively improve using perturbation
+        while self.twoopt.time_limit - duration > 1:
+            if random.random() > prob:
+                break
+            else:
+                count += 1
+                # Pertubate and restart local search
+                self.double_bridge_perturbation()
+                new_path, new_cost, duration = self.twoopt.two_opt()
+                if new_cost < best_cost:
+                    # Adopt this new best result
+                    best_path = new_path
+                    best_cost = new_cost
+                    duration = self.twoopt.get_duration()
+                else:
+                    # Revert to previous best path; decay the probability
+                    self.twoopt.path = best_path
+                    prob *=  decay
+                    duration = self.twoopt.get_duration()
 
+        return best_path, best_cost, duration, count
+        
+    
 def test_initialize():
     dist_matrix = np.array([[0, 20, 30, 10, 11],
                             [20, 0, 16, 4, 2],
@@ -217,21 +274,6 @@ def test_two_opt():
     topt1 = test_initialize()
     print topt1.two_opt()
 
-def test_ils():
-    dist_matrix = np.array([[0, 20, 30, 10, 11],
-                            [20, 0, 16, 4, 2],
-                            [30, 16, 0, 2, 4],
-                            [10, 4, 2, 0, 3],
-                            [11, 2, 4, 3, 0]])
-
-    time_limit = 1
-
-    random_seed = 10
-
-    ils1 = IteratedLocalSearch(dist_matrix, 5, time_limit, random_seed)
-    ils1.double_bridge_perturbation()
-
-
 def test_io():
     filename = "DATA/Cincinnati.tsp"
     city, dim, edge_weight_type, coord = parse_input(filename)
@@ -247,5 +289,14 @@ def test_io():
     output.solution([cost] + path)
     output.sol_trace([(quality, cost)])
 
+def test_ils():
+    filename = "DATA/Cincinnati.tsp"
+    city, dim, edge_weight_type, coord = parse_input(filename)
+    adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+    cut_off_sec = 10
+    ils = IteratedLocalSearch(adj_mat, dim, cut_off_sec, 20)
+
+    print ils.iterated_local_search()
+
 if __name__ == "__main__":
-    test_io()
+    test_ils()
