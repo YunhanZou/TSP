@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import random
+import os
 
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
@@ -234,7 +235,7 @@ class IteratedLocalSearch:
                     prob *=  decay
                     duration = self.twoopt.get_duration()
 
-        return best_path, best_cost, duration, count
+        return best_path, best_cost, duration
         
     
 def test_initialize():
@@ -290,13 +291,43 @@ def test_io():
     output.sol_trace([(quality, cost)])
 
 def test_ils():
-    filename = "DATA/Cincinnati.tsp"
+    # filename = "DATA/Cincinnati.tsp"
+    filename = "DATA/UKansasState.tsp"
+
     city, dim, edge_weight_type, coord = parse_input(filename)
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
-    cut_off_sec = 10
-    ils = IteratedLocalSearch(adj_mat, dim, cut_off_sec, 20)
+    algorithm = "IteratedLocalSearch"
+    cut_off_sec = 600
 
-    print ils.iterated_local_search()
+    output = Output(filename, algorithm, cut_off_sec)
+    ils = IteratedLocalSearch(adj_mat, dim, cut_off_sec, 20)
+    path, cost, quality, _ = ils.iterated_local_search()
+
+    output.solution([cost] + path)
+    output.sol_trace([(quality, cost)])
+
+
+def run_all_data():
+
+    dir = "DATA/"
+    for f in os.listdir(dir):
+        if f[-3:] == "tsp":
+            print dir+f
+            filename = dir+f
+            
+            city, dim, edge_weight_type, coord = parse_input(filename)
+            adj_mat = adjacency_mat(dim, edge_weight_type, coord)
+            algorithm = "IteratedLocalSearch"
+            cut_off_sec = 600
+            random_seed = 0
+
+            output = Output(filename, algorithm, cut_off_sec)
+            ils = IteratedLocalSearch(adj_mat, dim, cut_off_sec, random_seed)
+            path, cost, quality = ils.iterated_local_search()
+            print path, cost, quality
+
+            output.solution([cost] + path)
+            output.sol_trace([(quality, cost)])
 
 if __name__ == "__main__":
-    test_ils()
+    run_all_data()
