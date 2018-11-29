@@ -2,7 +2,8 @@ from Input import format_check, parse_input, adjacency_mat, write_adj_mat_file
 from Output import Output
 from Approximation import compute
 from BranchNBound import BranchNBound
-from LocalSearch import TwoOpt
+from IteratedLocalSearch import IteratedLocalSearch as ILS
+from SimulatedAnnealing import SimulatedAnnealing as SA
 import time
 
 
@@ -30,11 +31,18 @@ def main():
         output.sol_trace([(quality, cost)])  # generate solution trace file
 
     elif algorithm == 'LS1':
-        ls1 = TwoOpt(adj_mat, dim, cut_off_sec)  # param: dist_matrix, num_city, time_limit
-        path = ls1.path
+        ils = ILS(adj_mat, dim, cut_off_sec, random_seed)  # param: dist_matrix, num_city, time_limit, random_seed
+        path, cost, quality = ils.iterated_local_search()
 
-        best_quality = 1000000  # TODO: need modification here
-        output.solution([best_quality] + path)  # generate solution file
+        output.solution([cost] + path)  # generate solution file
+        output.sol_trace([(quality, cost)])  # generate solution trace file
+
+    elif algorithm == 'LS2':
+        sa = SA(adj_mat, dim, random_seed)  # param: dist_matrix, num_city, random_seed
+        path, cost, quality, iteration = sa.run_simulated_annealing(1000, 0.99)  # TODO: need clarification
+
+        output.solution([cost] + path)  # generate solution file
+        output.sol_trace([(quality, cost)])  # generate solution trace file
 
 
 if __name__ == '__main__':

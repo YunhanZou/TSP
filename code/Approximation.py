@@ -84,6 +84,7 @@ def MST(d, input, root):
 
     return mst
 
+
 # O(d^2)
 def DFS(d, mst, root):
     assert len(mst) == d
@@ -105,6 +106,7 @@ def DFS(d, mst, root):
 
     tsp.append(root)
     return tsp
+
 
 # O(d^2)
 def compute(d, input):

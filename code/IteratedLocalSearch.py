@@ -271,9 +271,11 @@ def test_eval_try_path():
     old_quality = topt1.eval_initial_path()
     print topt1.eval_try_path(old_quality, 3, 4)
 
+
 def test_two_opt():
     topt1 = test_initialize()
     print topt1.two_opt()
+
 
 def test_io():
     filename = "DATA/Cincinnati.tsp"
@@ -282,13 +284,13 @@ def test_io():
     algorithm = "TwoOpt"
     cut_off_sec = 10
 
-
     output = Output(filename, algorithm, cut_off_sec)
     to = TwoOpt(adj_mat, dim, cut_off_sec)
     path, cost, quality = to.two_opt()
 
     output.solution([cost] + path)
     output.sol_trace([(quality, cost)])
+
 
 def test_ils():
     # filename = "DATA/Cincinnati.tsp"
@@ -308,7 +310,6 @@ def test_ils():
 
 
 def run_all_data():
-
     dir = "DATA/"
     for f in os.listdir(dir):
         if f[-3:] == "tsp":
