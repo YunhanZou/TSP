@@ -44,14 +44,11 @@ def main():
     elif algorithm == 'LS2':
         output = Output(filename, algorithm, cut_off_sec, random_seed)  # init output object
 
-        sa = SA(adj_mat, dim, random_seed)  # param: dist_matrix, num_city, random_seed
-        path, cost, quality, iteration = sa.run_simulated_annealing(1000, 0.99)  # TODO: need clarification
+        sa = SA(adj_mat, dim, 1e20, 0.0001, 0.99, 100, random_seed, cut_off_sec)
+        path, cost, quality = sa.run_simulated_annealing()
 
         output.solution([cost] + path)  # generate solution file
         output.sol_trace([(quality, cost)])  # generate solution trace file
-
-    elif algorithm == 'SA':
-
 
 
 if __name__ == '__main__':
