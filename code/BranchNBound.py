@@ -16,8 +16,10 @@ class BranchNBound:
     def __init__(self, dist_matrix, num_city, time_limit):
         self.cost_matrix = np.asarray(dist_matrix, dtype='float')
         self.n = num_city
-        self.upper_bound = float('inf')
-        self.best_path = []
+        self.best_path, self.upper_bound = initBestPath(self.cost_matrix)
+
+        print('The initialized path has a cost of ' + str(self.upper_bound))
+
         # self.start_time = int(round(time.time() * 1000))
         self.time_limit = time_limit * 1000  # time limit in millisec
         # print('self.time_limit = ' + str(self.time_limit))
@@ -97,6 +99,37 @@ class BranchNBound:
         self.best_path.append(0)
 
         return self.best_path, self.upper_bound, self.best_soln_quality/1000.0
+
+
+def initBestPath(adj_matrix):
+    """Greedy method to initialize the best route and upper bound to prune more trees."""
+
+    path = [0]
+    cost = 0
+    remaining_nodes = set()
+    n = adj_matrix.shape[0]
+
+    for i in range(1, n):
+        remaining_nodes.add(i)
+
+    curr_node = 0
+    next_node = None
+    while not len(remaining_nodes) == 0:
+        edge_cost = float('inf')
+        for neighbor in remaining_nodes:
+            next_cost = adj_matrix[curr_node][neighbor]
+            if next_cost < edge_cost:
+                edge_cost = next_cost
+                next_node = neighbor
+
+        path.append(next_node)
+        cost += adj_matrix[curr_node][next_node]
+        curr_node = next_node
+        remaining_nodes.remove(next_node)
+
+    cost += adj_matrix[next_node][0]
+
+    return path, cost
 
 
 def reduce_matrix(reduced_matrix):

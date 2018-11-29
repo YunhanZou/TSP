@@ -36,6 +36,9 @@ def main():
         best_quality = 1000000  # TODO: need modification here
         output.solution([best_quality] + path)  # generate solution file
 
+    elif algorithm == 'SA':
+
+
 
 if __name__ == '__main__':
     main()
