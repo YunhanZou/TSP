@@ -8,8 +8,9 @@ class Output(object):
             self.path += '_' + str(rand_seed)
 
     def solution(self, sol_list):
-        self.path += '.sol'
-        f = open(self.path, 'w')
+        path = self.path
+        path += '.sol'
+        f = open(path, 'w')
         line1 = str(int(sol_list[0])) + '\n'
         f.write(line1)
 
@@ -20,8 +21,9 @@ class Output(object):
         f.close()
 
     def sol_trace(self, sol_trace_list):
-        self.path += '.trace'
-        f = open(self.path, 'w')
+        path = self.path
+        path += '.trace'
+        f = open(path, 'w')
         for trace in sol_trace_list:
             line = str(trace[0]) + ', ' + str(int(trace[1])) + '\n'
             f.write(line)
