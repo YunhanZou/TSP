@@ -20,9 +20,7 @@ class BranchNBound:
 
         print('The initialized path has a cost of ' + str(self.upper_bound))
 
-        # self.start_time = int(round(time.time() * 1000))
-        self.time_limit = time_limit * 1000  # time limit in millisec
-        # print('self.time_limit = ' + str(self.time_limit))
+        self.time_limit = time_limit  # time limit in sec
         self.best_soln_quality = 0.0
 
         self.preprocess_cost_matrix()  # Set diagonal elements to infinity
@@ -30,8 +28,8 @@ class BranchNBound:
         reduced_matrix = np.copy(self.cost_matrix)
         cost, reduced_matrix = reduce_matrix(reduced_matrix)
 
-
         # Initiate a priority queue for each length of partial solution.
+
         self.pqs = []
         for i in range(0, num_city):
             self.pqs.append(PriorityQueue())
@@ -50,19 +48,18 @@ class BranchNBound:
     def run_branch_and_bound(self):
         """Body of branch and bound, return the best solution within time limit."""
 
-        start_time = int(round(time.time() * 1000))
+        start_time = time.time()
+        duration = 0.0
         print('The start time is ' + str(start_time) + '. The time limit is ' + str(self.time_limit))
-        duration = 0
 
         current_level = 0
-
 
         while not (all(pq.is_empty() for pq in self.pqs)) and duration < self.time_limit:
             exausted = False
             entry_level = current_level
             while self.pqs[current_level].is_empty():
                 current_level += 1
-                if current_level == self.n :
+                if current_level == self.n:
                     current_level = 0
                 if current_level == entry_level:
                     exausted = True
@@ -117,7 +114,6 @@ class BranchNBound:
                         reduced_mat_copy[next_idx, 0] = float('inf')  # cannot go back to start point
                         cost, new_reduced_mat = reduce_matrix(reduced_mat_copy)
                         new_cost = cost_so_far + cost + reduced_matrix[curr_node_idx, next_idx]
-                        # print('The new_cost is ' + str(new_cost))
 
                         # Bound
                         if new_cost < self.upper_bound:
@@ -127,14 +123,11 @@ class BranchNBound:
                             next_node = new_cost, content
                             self.pqs[current_level].append(next_node)
 
-
-            # Update timer
-            curr_time = int(round(time.time() * 1000))
-            duration = curr_time - start_time
+            duration = time.time() - start_time  # update timer
 
         self.best_path.append(0)
 
-        return self.best_path, self.upper_bound, self.best_soln_quality/1000.0
+        return self.best_path, self.upper_bound, self.best_soln_quality
 
 
 def initBestPath(adj_matrix):
@@ -196,6 +189,7 @@ def set_row_col_inf(reduced_matrix, i, j):
     reduced_matrix[j, i] = float('inf')
 
 
+# For debugging
 def print_path(path):
     print('The shortest TSP path found is: ' + str(path[0])),
 

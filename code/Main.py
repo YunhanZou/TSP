@@ -1,7 +1,7 @@
 from Input import format_check, parse_input, adjacency_mat, write_adj_mat_file
 from Output import Output
 from Approximation import compute
-from BranchNBound import BranchNBound
+from BranchNBoundAlter import BranchNBound
 from IteratedLocalSearch import IteratedLocalSearch as ILS
 from SimulatedAnnealing import SimulatedAnnealing as SA
 import time
@@ -44,7 +44,7 @@ def main():
     elif algorithm == 'LS2':
         output = Output(filename, algorithm, cut_off_sec, random_seed)  # init output object
 
-        sa = SA(adj_mat, dim, 1e20, 0.0001, 0.99, 100, random_seed, cut_off_sec)
+        sa = SA(adj_mat, dim, 1e20, 0.0001, 0.99, random_seed, cut_off_sec)
         path, cost, quality = sa.run_simulated_annealing()
 
         output.solution([cost] + path)  # generate solution file

@@ -10,7 +10,7 @@ from Output import Output
 from Input import format_check, parse_input, adjacency_mat
 
 
-class BranchNBound:
+class BranchNBoundOriginal:
     """Class to implement Branch and Bound algorithm"""
 
     def __init__(self, dist_matrix, num_city, time_limit):
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
     output = Output(filename, algorithm, cut_off_sec)
-    bnb = BranchNBound(adj_mat, dim, cut_off_sec)
+    bnb = BranchNBoundOriginal(adj_mat, dim, cut_off_sec)
     path, cost, quality = bnb.run_branch_and_bound()
 
     # print_path(path)

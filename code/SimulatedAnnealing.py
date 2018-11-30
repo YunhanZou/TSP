@@ -27,7 +27,7 @@ class SimulatedAnnealing:
     def run_simulated_annealing(self):
         """Body of the Simulated Annealing algorithm"""
 
-        start_time = int(round(time.time() * 1000))
+        start_time = time.time()
         counter = 0
 
         duration = 0
