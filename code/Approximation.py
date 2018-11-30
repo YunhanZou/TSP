@@ -148,7 +148,7 @@ if __name__ == "__main__":
             
     # O(m log n) --- n = 1000 ---> O(n^2)
     """
-    if (True): # todo modify here to switch mode
+    if (False): # todo modify here to switch mode
         dims = []
         rel_times = []
         rel_dists = []
