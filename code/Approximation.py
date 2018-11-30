@@ -109,18 +109,18 @@ def DFS(d, mst, root):
     return tsp
 
 # O(d^2)
-def compute_(d, input, root):
+def compute(d, input, root=0):
     mst = MST(d, input, root)
     tsp = DFS(d, mst, root)
     c = np.sum([input[tsp[i]][tsp[i + 1]] for i in range(d)])
     return c, tsp
 
 # O(d^3)
-def compute(d, input):
+def computeOpt(d, input):
     cs = []
     tsps = []
     for i in range(d):
-        c, tsp = compute_(d, input, i)
+        c, tsp = compute(d, input, i)
         cs.append(c)
         tsps.append(tsp)
     i = np.argmin(cs)
@@ -148,7 +148,7 @@ if __name__ == "__main__":
             
     # O(m log n) --- n = 1000 ---> O(n^2)
     """
-    if (False): # todo modify here to switch mode
+    if (True): # todo modify here to switch mode
         dims = []
         rel_times = []
         rel_dists = []
