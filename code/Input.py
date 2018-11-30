@@ -37,6 +37,13 @@ def format_check():
             cut_off_sec = arg
         elif opt in ("-s", "--seed"):
             random_seed = arg
+            if algorithm == 'BnB' or algorithm == 'Approx':
+                if random_seed != None:
+                    print "Please provide correct input arguments"
+                    sys.exit(2)
+                else:
+                    random_seed = None
+
     # print filename, algorithm, cut_off_sec, random_seed
     if not filename or not algorithm or not cut_off_sec:
         print 'format: \nInput.py -inst <filename> -alg [BnB | Approx | LS1 | LS2] -time <cutoff_in_seconds> [-seed <random_seed>]'
