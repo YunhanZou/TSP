@@ -70,8 +70,6 @@ class BranchNBound:
             if self.pqs[current_level].size() > 511:
                 self.pqs[current_level].queue = self.pqs[current_level].queue[0:510]
 
-            # print(current_level, self.pqs[current_level].size())
-
             # print self.upper_bound
             _, content = self.pqs[current_level].pop()
 

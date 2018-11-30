@@ -1,7 +1,7 @@
 from Input import format_check, parse_input, adjacency_mat, write_adj_mat_file
 from Output import Output
 from Approximation import compute
-from BranchNBoundAlter import BranchNBound
+from BranchNBoundImproved import BranchNBound
 from IteratedLocalSearch import IteratedLocalSearch as ILS
 from SimulatedAnnealing import SimulatedAnnealing as SA
 import time
