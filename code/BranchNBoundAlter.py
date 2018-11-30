@@ -58,10 +58,20 @@ class BranchNBound:
 
 
         while not (all(pq.is_empty() for pq in self.pqs)) or duration < self.time_limit:
+            exausted = False
+            entry_level = current_level
             while self.pqs[current_level].is_empty():
                 current_level += 1
                 if current_level == self.n :
                     current_level = 0
+                if current_level == entry_level:
+                    exausted = True
+                    break
+            if exausted:
+                break
+
+            if self.pqs[current_level].size() > 511:
+                self.pqs[current_level].queue = self.pqs[current_level].queue[0:510]
 
             # print(current_level, self.pqs[current_level].size())
 
@@ -73,9 +83,9 @@ class BranchNBound:
             if cost_so_far >= self.upper_bound:
                 # The shortest path in pq on this level is larger than upperbound
                 # we can purge all the partial solutions on this level
-                print("Prune this level", cost_so_far, self.upper_bound)
+                print("Prune this level", current_level, self.pqs[current_level].size(), cost_so_far, self.upper_bound)
                 self.pqs[current_level].clear()
-                # current_level = 0
+                current_level += 1
 
             else:
                 # print(cost_so_far, self.upper_bound, self.pqs[current_level].size(), content.get_path_so_far())
@@ -85,15 +95,15 @@ class BranchNBound:
                 visited = content.get_visited()
 
                 neighbors = [i for i in range(self.n) if i not in visited]
+                # print path_so_far, neighbors
 
                 # A solution is found
-                if current_level == self.n - 1:
+                if current_level == self.n-1:
                     print('A solution is found.')
-                    if cost_so_far < self.upper_bound:
-                        self.upper_bound = cost_so_far
-                        print(cost_so_far)
-                        self.best_path = path_so_far
-                        self.best_soln_quality = duration
+                    self.upper_bound = cost_so_far
+                    print(cost_so_far)
+                    self.best_path = path_so_far
+                    self.best_soln_quality = duration
                     current_level = 0
                 
                 else: 
