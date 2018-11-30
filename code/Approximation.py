@@ -63,17 +63,18 @@ def compute_nx(d, input):
 
 # O(d^2)
 def MST(d, input, root):
-
     mst = np.zeros(d)
     mst[root] = root
 
     a = np.ones(d) * sys.maxint
 
     visited = np.zeros(d)
-    visited[root] = 1
 
     while not np.all(visited):
-        u = np.argmin(a)
+        if np.sum(visited) == 0:
+            u = root
+        else:
+            u = np.argmin(a)
         visited[u] = 1
         a[u] = sys.maxint
 
@@ -107,17 +108,23 @@ def DFS(d, mst, root):
     tsp.append(root)
     return tsp
 
-
 # O(d^2)
-def compute(d, input):
-
-    root = 0
-
+def compute_(d, input, root):
     mst = MST(d, input, root)
     tsp = DFS(d, mst, root)
     c = np.sum([input[tsp[i]][tsp[i + 1]] for i in range(d)])
-
     return c, tsp
+
+# O(d^3)
+def compute(d, input):
+    cs = []
+    tsps = []
+    for i in range(d):
+        c, tsp = compute_(d, input, i)
+        cs.append(c)
+        tsps.append(tsp)
+    i = np.argmin(cs)
+    return cs[i], tsps[i]
 
 
 if __name__ == "__main__":
@@ -141,7 +148,7 @@ if __name__ == "__main__":
             
     # O(m log n) --- n = 1000 ---> O(n^2)
     """
-    if (False): # todo modify here to switch mode
+    if (True): # todo modify here to switch mode
         dims = []
         rel_times = []
         rel_dists = []
@@ -164,7 +171,7 @@ if __name__ == "__main__":
                 # print c, tour
             end_MST = time.time()
             total_time = (end_MST - start_MST)
-
+            print c, tour
             print total_time / k
 
             dims.append(dim)
