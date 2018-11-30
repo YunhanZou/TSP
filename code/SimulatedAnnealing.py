@@ -11,32 +11,39 @@ from Input import format_check, parse_input, adjacency_mat
 
 class SimulatedAnnealing:
 
-    def __init__(self, cost_mat, dim, start_T, end_T, cooling_factor, iter, seed, time_limit):
+    def __init__(self, cost_mat, dim, start_T, end_T, cooling_factor, seed, time_limit):
         self.cost_mat = np.asarray(cost_mat)
         self.n = dim
         self.seed = seed
         self.start_T = start_T
         self.end_T = end_T
         self.cooling_factor = cooling_factor
-        self.num_iter = iter
         self.best_soln, self.path_cost = self.random_tour()
         self.restart_tour = copy.deepcopy(self.best_soln)  # initial tour for restarting annealing
         self.restart_tour_cost = self.path_cost
         self.quality = 0.0
-        self.time_limit = time_limit * 1000  # in millisec
+        self.time_limit = time_limit  # in sec
 
     def run_simulated_annealing(self):
         """Body of the Simulated Annealing algorithm"""
 
-        start_time = int(round(time.time() * 1000))
+        print("---------------------------------")
+        print('Now running Simulated Annealing\n')
+        
+        # timeout = time.time() + self.time_limit
         counter = 0
-
-        duration = 0
+        start_time = time.time()
+        decrease_T_factor = 1
+        duration = 0.0
 
         while duration < self.time_limit:
-            T = self.start_T
-            print('In the current iteration, the initial path cost is ' + str(self.path_cost))
+            print('Duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', shortest distance: ' + str(self.path_cost))
+            T = self.start_T * decrease_T_factor
+            self.seed *= 2
+            random.seed(self.seed)
+            # print('In the current iteration, the initial path cost is ' + str(self.path_cost))
             while T > self.end_T:
+                # print T, self.restart_tour_cost
                 # if counter % 1000 == 0:
                 #     print('After iteration ' + str(counter) + ', the cost is ' + str(self.path_cost))
                 a = random.randint(1, self.n - 1)  # don't swap the node at index 0
@@ -60,15 +67,14 @@ class SimulatedAnnealing:
                     if new_dist < self.restart_tour_cost:
                         self.restart_tour = copy.deepcopy(new_tour)
                         self.restart_tour_cost = new_dist
-                    curr_time = int(round(time.time() * 1000))
-                    self.quality = (curr_time - start_time) / 1000.0
+                        # curr_time = int(round(time.time() * 1000))
+                        self.quality = time.time() - start_time  # log in sec
                 else:
                     diff = self.path_cost - new_dist
-                    prob = math.exp(diff / T)
+                    prob = math.exp(float(diff) / float(T))
                     if prob > random.uniform(0, 1):
                         self.best_soln = copy.deepcopy(new_tour)
                         self.path_cost = new_dist
-                        curr_time = int(round(time.time() * 1000))
 
                 T *= self.cooling_factor
 
@@ -77,11 +83,11 @@ class SimulatedAnnealing:
             new_cost = calculate_init_distance(self.best_soln, self.cost_mat)
             self.path_cost = new_cost
 
-            # Update timer
-            curr_time = int(round(time.time() * 1000))
-            duration = curr_time - start_time
+            decrease_T_factor *= 0.8
 
-        self.best_soln.append(self.best_soln[0])  # add start city
+            time.sleep(1)  # prevent CPU hogging
+
+            duration = time.time() - start_time  # update timer
 
         return self.best_soln, self.path_cost, self.quality
 
@@ -93,6 +99,7 @@ class SimulatedAnnealing:
 
         random.seed(self.seed)
         random.shuffle(tour)
+        tour.append(tour[0])  # last city back to the starting one
 
         dist = calculate_init_distance(tour, self.cost_mat)
 
@@ -100,13 +107,13 @@ class SimulatedAnnealing:
 
     def swap_tour(self, start_ind, end_ind):
         """
-        Given the start and end index, swap the location of these two cities.
+        Given the start and end index, reverse the cities between them (including them).
 
         Cite: http://www.stat.yale.edu/~pollard/Courses/251.spring2013/Handouts/Chang-MoreMC.pdf
         """
 
         tour = self.best_soln[:]
-        tour[start_ind], tour[end_ind] = tour[end_ind], tour[start_ind]
+        tour[start_ind:end_ind+1] = reversed(tour[start_ind:end_ind+1])
 
         return tour
 
@@ -114,15 +121,13 @@ class SimulatedAnnealing:
 def calculate_init_distance(tour, adj_matrix):
     """Used to calculate the total distance of a tour at each restart, O(n)"""
 
-    num_cities = len(tour)
+    num_cities = adj_matrix.shape[0]
 
-    dist = 0
-    for i in range(num_cities-1):
+    dist = 0.0
+    for i in range(num_cities):
         curr_city = tour[i]
         next_city = tour[i+1]
         dist += adj_matrix[curr_city, next_city]
-
-    dist += adj_matrix[tour[-1], tour[0]]  # add dist from last city to start city
 
     return dist
 
@@ -133,23 +138,12 @@ def update_distance(old_distance, old_tour, adj_matrix, start, end):
     start_city = old_tour[start]
     end_city = old_tour[end]
     before_start = old_tour[start-1]
-    after_start = old_tour[start+1]
-    before_end = old_tour[end-1]
-    if end == adj_matrix.shape[0]-1:
-        after_end = old_tour[0]
-    else:
-        after_end = old_tour[end+1]
+    after_end = old_tour[end+1]
 
-    if end - start == 1:
-        before_swap = adj_matrix[before_start][start_city] + adj_matrix[end_city][after_end]
-        after_swap = adj_matrix[before_start][end_city] + adj_matrix[start_city][after_end]
-    else:
-        before_swap = adj_matrix[before_start][start_city] + adj_matrix[start_city][after_start] \
-                    + adj_matrix[before_end][end_city] + adj_matrix[end_city][after_end]
-        after_swap = adj_matrix[before_start][end_city] + adj_matrix[end_city][after_start] \
-                    + adj_matrix[before_end][start_city] + adj_matrix[start_city][after_end]
+    new_distance = old_distance - adj_matrix[before_start][start_city] - adj_matrix[end_city][after_end]
+    new_distance += adj_matrix[before_start][end_city] + adj_matrix[start_city][after_end]
 
-    return old_distance - before_swap + after_swap
+    return new_distance
 
 
 def print_path(input_path, input_cost):
@@ -179,7 +173,7 @@ if __name__ == "__main__":
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
     output = Output(filename, algorithm, cut_off_sec)
-    sa = SimulatedAnnealing(adj_mat, dim, 1e20, 0.0001, 0.99, 50, 666)
+    sa = SimulatedAnnealing(adj_mat, dim, 1e20, 0.0001, 0.99, 40, 600)
     path, cost, quality = sa.run_simulated_annealing()
 
     output.solution([cost] + path)
