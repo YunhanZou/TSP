@@ -1,8 +1,6 @@
 import numpy as np
 import time
 import copy
-import math
-import sys
 
 from PriorityQueue import PriorityQueue
 from Node import Node
@@ -14,11 +12,14 @@ class BranchNBound:
     """Class to implement Branch and Bound algorithm"""
 
     def __init__(self, dist_matrix, num_city, time_limit):
+        print('-------------------')
+        print('Running improved Branch and Bound\n')
+
         self.cost_matrix = np.asarray(dist_matrix, dtype='float')
         self.n = num_city
-        self.best_path, self.upper_bound = initBestPath(self.cost_matrix)
+        self.best_path, self.upper_bound = initiate_greedy_path(self.cost_matrix)
 
-        print('The initialized path has a cost of ' + str(self.upper_bound))
+        print('The initial path has a cost of ' + str(self.upper_bound))
 
         self.time_limit = time_limit  # time limit in sec
         self.best_soln_quality = 0.0
@@ -29,7 +30,6 @@ class BranchNBound:
         cost, reduced_matrix = reduce_matrix(reduced_matrix)
 
         # Initiate a priority queue for each length of partial solution.
-
         self.pqs = []
         for i in range(0, num_city):
             self.pqs.append(PriorityQueue())
@@ -50,7 +50,6 @@ class BranchNBound:
 
         start_time = time.time()
         duration = 0.0
-
         current_level = 0
 
         while not (all(pq.is_empty() for pq in self.pqs)) and duration < self.time_limit:
@@ -66,8 +65,8 @@ class BranchNBound:
             if exausted:
                 break
 
-            if self.pqs[current_level].size() > 511:
-                self.pqs[current_level].queue = self.pqs[current_level].queue[0:510]
+            if self.pqs[current_level].size() > 701:
+                self.pqs[current_level].queue = self.pqs[current_level].queue[0:700]
 
             # print self.upper_bound
             _, content = self.pqs[current_level].pop()
@@ -75,26 +74,24 @@ class BranchNBound:
             cost_so_far = content.get_cost()
 
             if cost_so_far >= self.upper_bound:
-                # The shortest path in pq on this level is larger than upperbound
-                # we can purge all the partial solutions on this level
-                print("Prune this level", current_level, self.pqs[current_level].size(), cost_so_far, self.upper_bound)
+                # The shortest path in pq on this level has a lower bound larger than the upper bound
+                # so we can prune all the partial solutions on this level
+                # print("Prune this level", current_level, self.pqs[current_level].size(), cost_so_far, self.upper_bound)
                 self.pqs[current_level].clear()
 
             else:
-                # print(cost_so_far, self.upper_bound, self.pqs[current_level].size(), content.get_path_so_far())
                 path_so_far = content.get_path_so_far()
                 curr_node_idx = path_so_far[-1]  # the node to be expanded
                 reduced_matrix = content.get_reduced_mat()
                 visited = content.get_visited()
 
                 neighbors = [i for i in range(self.n) if i not in visited]
-                # print path_so_far, neighbors
 
                 # A solution is found
                 if current_level == self.n-1:
-                    print('A solution is found.')
+                    print('A solution is found, '),
+                    print('duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(cost_so_far))
                     self.upper_bound = cost_so_far
-                    print(cost_so_far)
                     self.best_path = path_so_far
                     self.best_soln_quality = duration
                     current_level = 0
@@ -122,12 +119,12 @@ class BranchNBound:
 
             duration = time.time() - start_time  # update timer
 
-        self.best_path.append(0)
+        self.best_path.append(0)  # append the start city
 
         return self.best_path, self.upper_bound, self.best_soln_quality
 
 
-def initBestPath(adj_matrix):
+def initiate_greedy_path(adj_matrix):
     """Greedy method to initialize the best route and upper bound to prune more trees."""
 
     path = [0]
@@ -187,11 +184,11 @@ def set_row_col_inf(reduced_matrix, i, j):
 
 
 # For debugging
-def print_path(path):
-    print('The shortest TSP path found is: ' + str(path[0])),
+def print_path(input_path):
+    print('The shortest TSP path found is: ' + str(input_path[0])),
 
-    for i in range(1, len(path)):
-        print('-> ' + str(path[i])),
+    for i in range(1, len(input_path)):
+        print('-> ' + str(input_path[i])),
     print('\n')
 
 
