@@ -17,12 +17,11 @@ class BranchNBound:
 
         self.cost_matrix = np.asarray(dist_matrix, dtype='float')
         self.n = num_city
+        start_time = time.time()
         self.best_path, self.upper_bound = initiate_greedy_path(self.cost_matrix)
-
-        print('The initial path has a cost of ' + str(self.upper_bound))
+        self.best_soln_quality = time.time() - start_time
 
         self.time_limit = time_limit  # time limit in sec
-        self.best_soln_quality = 0.0
 
         self.preprocess_cost_matrix()  # Set diagonal elements to infinity
 
@@ -49,7 +48,7 @@ class BranchNBound:
         """Body of branch and bound, return the best solution within time limit."""
 
         start_time = time.time()
-        duration = 0.0
+        duration = self.best_soln_quality
         current_level = 0
 
         while not (all(pq.is_empty() for pq in self.pqs)) and duration < self.time_limit:
@@ -89,8 +88,8 @@ class BranchNBound:
 
                 # A solution is found
                 if current_level == self.n-1:
-                    print('A solution is found, '),
-                    print('duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(cost_so_far))
+                    # print('A solution is found, '),
+                    # print('duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(cost_so_far))
                     self.upper_bound = cost_so_far
                     self.best_path = path_so_far
                     self.best_soln_quality = duration
@@ -120,6 +119,8 @@ class BranchNBound:
             duration = time.time() - start_time  # update timer
 
         self.best_path.append(0)  # append the start city
+
+        print('Duration: ' + str(self.best_soln_quality) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(self.upper_bound))
 
         return self.best_path, self.upper_bound, self.best_soln_quality
 
