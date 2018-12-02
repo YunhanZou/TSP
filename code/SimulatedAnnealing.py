@@ -77,6 +77,8 @@ class SimulatedAnnealing:
                         self.path_cost = new_dist
 
                 T *= self.cooling_factor
+                # print(str(T) + ', ' + str(self.path_cost))
+                # T = float('%.5f' % T)
 
             # Restart
             self.best_soln = copy.deepcopy(self.restart_tour)
@@ -112,8 +114,16 @@ class SimulatedAnnealing:
         Cite: http://www.stat.yale.edu/~pollard/Courses/251.spring2013/Handouts/Chang-MoreMC.pdf
         """
 
+        i, j = start_ind, end_ind
+
         tour = self.best_soln[:]
-        tour[start_ind:end_ind+1] = reversed(tour[start_ind:end_ind+1])
+
+        while i < j:
+            temp = tour[i]
+            tour[i] = tour[j]
+            tour[j] = temp
+            i += 1
+            j += -1
 
         return tour
 

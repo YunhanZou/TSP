@@ -27,10 +27,10 @@ def main():
         output = Output(filename, algorithm, cut_off_sec)  # init output object
 
         bnb = BranchNBound(adj_mat, dim, cut_off_sec)  # param: dist_matrix, num_city, time_limit
-        path, cost, quality = bnb.run_branch_and_bound()
+        path, cost, trace_list = bnb.run_branch_and_bound()
 
         output.solution([cost] + path)  # generate solution file
-        output.sol_trace([(quality, cost)])  # generate solution trace file
+        output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS1':  # Iterated LocalSearch
         output = Output(filename, algorithm, cut_off_sec, random_seed)  # init output object

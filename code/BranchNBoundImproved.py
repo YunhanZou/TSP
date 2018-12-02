@@ -12,7 +12,7 @@ class BranchNBound:
     """Class to implement Branch and Bound algorithm"""
 
     def __init__(self, dist_matrix, num_city, time_limit):
-        print('-------------------')
+        print('---------------------------------')
         print('Running improved Branch and Bound\n')
 
         self.cost_matrix = np.asarray(dist_matrix, dtype='float')
@@ -20,6 +20,7 @@ class BranchNBound:
         start_time = time.time()
         self.best_path, self.upper_bound = initiate_greedy_path(self.cost_matrix)
         self.best_soln_quality = time.time() - start_time
+        self.trace_list = [('%.4f' % self.best_soln_quality, self.upper_bound)]
 
         self.time_limit = time_limit  # time limit in sec
 
@@ -64,8 +65,8 @@ class BranchNBound:
             if exausted:
                 break
 
-            if self.pqs[current_level].size() > 701:
-                self.pqs[current_level].queue = self.pqs[current_level].queue[0:700]
+            if self.pqs[current_level].size() > 1024:
+                self.pqs[current_level].queue = self.pqs[current_level].queue[0:1023]
 
             # print self.upper_bound
             _, content = self.pqs[current_level].pop()
@@ -94,8 +95,9 @@ class BranchNBound:
                     self.best_path = path_so_far
                     self.best_soln_quality = duration
                     current_level = 0
-                
-                else: 
+                    self.trace_list.append(('%.4f' % self.best_soln_quality, self.upper_bound))
+
+                else:
                     # Branch
                     current_level += 1
                     for next_idx in neighbors:
@@ -122,7 +124,7 @@ class BranchNBound:
 
         print('Duration: ' + str(self.best_soln_quality) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(self.upper_bound))
 
-        return self.best_path, self.upper_bound, self.best_soln_quality
+        return self.best_path, self.upper_bound, self.trace_list
 
 
 def initiate_greedy_path(adj_matrix):
