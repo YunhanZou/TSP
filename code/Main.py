@@ -21,7 +21,7 @@ def main():
         total_time = time.time() - start_MST
 
         output.solution([c] + tour)  # generate solution file
-        output.sol_trace([(total_time, 1)])  # generate solution trace file
+        output.sol_trace([('%.4f' % total_time, c)])  # generate solution trace file
 
     elif algorithm == 'BnB':
         output = Output(filename, algorithm, cut_off_sec, algorithm)  # init output object
