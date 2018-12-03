@@ -18,7 +18,10 @@ class SimulatedAnnealing:
         self.start_T = start_T
         self.end_T = end_T
         self.cooling_factor = cooling_factor
+        self.start_time = time.time()
         self.best_soln, self.path_cost = self.random_tour()
+        self.best_soln_quality = time.time() - self.start_time
+        self.trace_list = [('%.4f' % self.best_soln_quality, self.path_cost)]
         self.restart_tour = copy.deepcopy(self.best_soln)  # initial tour for restarting annealing
         self.restart_tour_cost = self.path_cost
         self.quality = 0.0
@@ -32,9 +35,8 @@ class SimulatedAnnealing:
         
         # timeout = time.time() + self.time_limit
         counter = 0
-        start_time = time.time()
         decrease_T_factor = 1
-        duration = 0.0
+        duration = self.best_soln_quality
 
         while duration < self.time_limit:
             print('Duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', shortest distance: ' + str(self.path_cost))
@@ -62,26 +64,25 @@ class SimulatedAnnealing:
                 new_dist = update_distance(self.path_cost, self.best_soln, self.cost_mat, start_ind, end_ind)
 
                 if new_dist < self.path_cost:
-                    self.best_soln = copy.deepcopy(new_tour)
+                    self.best_soln = new_tour[:]
                     self.path_cost = new_dist
                     if new_dist < self.restart_tour_cost:
-                        self.restart_tour = copy.deepcopy(new_tour)
+                        self.restart_tour = new_tour[:]
                         self.restart_tour_cost = new_dist
-                        # curr_time = int(round(time.time() * 1000))
-                        self.quality = time.time() - start_time  # log in sec
+                        self.best_soln_quality = time.time() - self.start_time
+                        self.trace_list.append(('%.4f' % self.best_soln_quality, self.restart_tour_cost))
+
                 else:
                     diff = self.path_cost - new_dist
                     prob = math.exp(float(diff) / float(T))
                     if prob > random.uniform(0, 1):
-                        self.best_soln = copy.deepcopy(new_tour)
+                        self.best_soln = new_tour[:]
                         self.path_cost = new_dist
 
                 T *= self.cooling_factor
-                # print(str(T) + ', ' + str(self.path_cost))
-                # T = float('%.5f' % T)
 
             # Restart
-            self.best_soln = copy.deepcopy(self.restart_tour)
+            self.best_soln = self.restart_tour[:]
             new_cost = calculate_init_distance(self.best_soln, self.cost_mat)
             self.path_cost = new_cost
 
@@ -89,9 +90,9 @@ class SimulatedAnnealing:
 
             time.sleep(1)  # prevent CPU hogging
 
-            duration = time.time() - start_time  # update timer
+            duration = time.time() - self.start_time  # update timer
 
-        return self.best_soln, self.path_cost, self.quality
+        return self.best_soln, self.path_cost, self.trace_list
 
     def random_tour(self):
         """Generate a random tour at initialization"""
@@ -167,24 +168,13 @@ def print_path(input_path, input_cost):
 
 if __name__ == "__main__":
 
-    # cost_matrix = np.array([[0, 20, 30, 10, 11],
-    #                        [20, 0, 16, 4, 2],
-    #                        [30, 16, 0, 2, 4],
-    #                        [10, 4, 2, 0, 3],
-    #                        [11, 2, 4, 3, 0]])
-    # sa = SimulatedAnnealing(cost_matrix, 5, 1e5, 0.0001, 0.97, 10, 666)
-
-    # path, cost, quality = sa.run_simulated_annealing()
-
-    # print_path(path, cost)
-
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)
 
     output = Output(filename, algorithm, cut_off_sec)
     sa = SimulatedAnnealing(adj_mat, dim, 1e20, 0.0001, 0.99, 40, 600)
-    path, cost, quality = sa.run_simulated_annealing()
+    path, cost, trace_list = sa.run_simulated_annealing()
 
-    output.solution([cost] + path)
-    output.sol_trace([(quality, cost)])
+    output.solution([cost] + path)  # generate solution file
+    output.sol_trace(trace_list)  # generate solution trace file
