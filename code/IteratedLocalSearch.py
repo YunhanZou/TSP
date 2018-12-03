@@ -210,6 +210,8 @@ class IteratedLocalSearch:
         The probability of "whether I should pertubate and local search once more" is decided by prob.
         For every pertubation that does not improve the solution, decay the probability.
         """
+        print("---------------------------------")
+        print('Now running Iterated Local Search\n')
 
         # Perform local search once to get the first best path
         best_path, best_cost, duration = self.twoopt.two_opt()
@@ -217,6 +219,8 @@ class IteratedLocalSearch:
 
         # Iteratively improve using perturbation
         while self.twoopt.time_limit - duration > 1:
+            print('Duration: ' + str(duration / 1000.0) + ', time limit: ' + str(self.twoopt.time_limit / 1000.0) + ', shortest distance: ' + str(best_cost))
+
             if random.random() > prob:
                 break
             else:
@@ -229,7 +233,9 @@ class IteratedLocalSearch:
                     best_path = new_path
                     best_cost = new_cost
                     duration = self.twoopt.get_duration()
-                    self.trace_list.append(('%.4f' % duration, best_cost))
+                    timestamp = duration / 1000.0
+                    self.trace_list.append(('%.4f' % timestamp, best_cost))  # update trace when new best cost found
+                    prob = 1
                 else:
                     # Revert to previous best path; decay the probability
                     self.twoopt.path = best_path

@@ -71,7 +71,7 @@ class SimulatedAnnealing:
                         self.restart_tour = self.best_soln[:]
                         self.restart_tour_cost = new_dist
                         self.best_soln_quality = time.time() - self.start_time
-                        self.trace_list.append(('%.4f' % self.best_soln_quality, self.restart_tour_cost))
+                        self.trace_list.append(('%.4f' % self.best_soln_quality, self.restart_tour_cost))  # update trace when new best quality found
 
                 else:
                     diff = self.path_cost - new_dist
