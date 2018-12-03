@@ -11,7 +11,7 @@ class TwoOpt:
     Class to implement Two-opt Exchange Local Search Algorithm
     """
 
-    def __init__(self, dist_matrix, num_city, time_limit = 6000, random_seed = 0):
+    def __init__(self, dist_matrix, num_city, time_limit=6000, random_seed=0):
         """
         Input:
             dist_matrix: np.array that contains distances between cities
@@ -163,7 +163,7 @@ class IteratedLocalSearch:
     """
     Wraper of TwoOpt to perform iterated local search using four bridge move
     """
-    def __init__(self, dist_matrix, num_city, time_limit = 10, random_seed = 0):
+    def __init__(self, dist_matrix, num_city, time_limit=10, random_seed=0):
         """
         Input:
             dist_matrix: np.array that contains distances between cities
@@ -173,6 +173,7 @@ class IteratedLocalSearch:
         Output: None
         """
         self.twoopt = TwoOpt(dist_matrix, num_city, time_limit, random_seed)
+        self.trace_list = []
 
     def double_bridge_perturbation(self):
         """
@@ -198,7 +199,7 @@ class IteratedLocalSearch:
         # print new_path
         self.twoopt.path = new_path
 
-    def iterated_local_search(self, prob = 1, decay = 0.9999):
+    def iterated_local_search(self, prob=1, decay=0.9999):
         """
         Input:
             prob: flaot, the probability to start next pertubation
@@ -214,7 +215,6 @@ class IteratedLocalSearch:
         best_path, best_cost, duration = self.twoopt.two_opt()
         count = 1
 
-
         # Iteratively improve using perturbation
         while self.twoopt.time_limit - duration > 1:
             if random.random() > prob:
@@ -229,13 +229,14 @@ class IteratedLocalSearch:
                     best_path = new_path
                     best_cost = new_cost
                     duration = self.twoopt.get_duration()
+                    self.trace_list.append(('%.4f' % duration, best_cost))
                 else:
                     # Revert to previous best path; decay the probability
                     self.twoopt.path = best_path
-                    prob *=  decay
+                    prob *= decay
                     duration = self.twoopt.get_duration()
 
-        return best_path, best_cost, duration
+        return best_path, best_cost, self.trace_list
         
     
 def test_initialize():
