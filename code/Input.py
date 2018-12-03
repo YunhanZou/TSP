@@ -38,7 +38,7 @@ def format_check():
         elif opt in ("-s", "--seed"):
             random_seed = arg
             if algorithm == 'BnB' or algorithm == 'Approx':
-                if random_seed != None:
+                if random_seed is not None:
                     print "Please provide correct input arguments"
                     sys.exit(2)
                 else:
@@ -183,6 +183,7 @@ def main():
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
+
 
 if __name__ == '__main__':
     main()

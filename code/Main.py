@@ -33,7 +33,7 @@ def main():
         output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS1':  # Iterated LocalSearch
-        output = Output(filename, algorithm, cut_off_sec, random_seed)  # init output object
+        output = Output(filename, algorithm, cut_off_sec, int(random_seed))  # init output object
 
         ils = ILS(adj_mat, dim, cut_off_sec, random_seed)  # param: dist_matrix, num_city, time_limit, random_seed
         path, cost, quality = ils.iterated_local_search()
@@ -42,13 +42,13 @@ def main():
         output.sol_trace([(quality, cost)])  # generate solution trace file
 
     elif algorithm == 'LS2':  # Simulated Annealing
-        output = Output(filename, algorithm, cut_off_sec, random_seed)  # init output object
+        output = Output(filename, algorithm, cut_off_sec, int(random_seed))  # init output object
 
-        sa = SA(adj_mat, dim, 1e25, 0.0001, 0.999, random_seed, cut_off_sec)
-        path, cost, quality = sa.run_simulated_annealing()
+        sa = SA(adj_mat, dim, 1e30, 1, 0.999, random_seed, cut_off_sec)
+        path, cost, trace_list = sa.run_simulated_annealing()
 
         output.solution([cost] + path)  # generate solution file
-        output.sol_trace([(quality, cost)])  # generate solution trace file
+        output.sol_trace(trace_list)  # generate solution trace file
 
 
 if __name__ == '__main__':
