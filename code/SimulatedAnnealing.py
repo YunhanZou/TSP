@@ -8,13 +8,20 @@ import numpy as np
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
 
+"""
+Author: Yunhan Zou
+CSE 6140, Fall 2018, Georgia Tech
+
+The simulated annealing algorithm to solve TSP problem.
+"""
+
 
 class SimulatedAnnealing:
 
     def __init__(self, cost_mat, dim, start_T, end_T, cooling_factor, seed, time_limit):
         self.cost_mat = np.asarray(cost_mat)
         self.n = dim
-        self.seed = seed
+        self.seed = int(seed)
         self.start_T = start_T
         self.end_T = end_T
         self.cooling_factor = cooling_factor
@@ -41,14 +48,10 @@ class SimulatedAnnealing:
         while duration < self.time_limit:
             print('Duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', shortest distance: ' + str(self.path_cost))
             T = self.start_T * decrease_T_factor
-            self.seed *= 2
+            self.seed += 2  # more randomness
             random.seed(self.seed)
-            # print('In the current iteration, the initial path cost is ' + str(self.path_cost))
             while T > self.end_T:
-                # print T, self.restart_tour_cost
-                # if counter % 1000 == 0:
-                #     print('After iteration ' + str(counter) + ', the cost is ' + str(self.path_cost))
-                a = random.randint(1, self.n - 1)  # don't swap the node at index 0
+                a = random.randint(1, self.n - 1)  # index 0 stays fixed
                 b = random.randint(1, self.n - 1)
 
                 start_ind = min(a, b)
@@ -59,15 +62,13 @@ class SimulatedAnnealing:
 
                 counter += 1
 
-                new_tour = self.swap_tour(start_ind, end_ind)
-
                 new_dist = update_distance(self.path_cost, self.best_soln, self.cost_mat, start_ind, end_ind)
 
                 if new_dist < self.path_cost:
-                    self.best_soln = new_tour[:]
+                    self.best_soln = self.swap_tour(start_ind, end_ind)
                     self.path_cost = new_dist
-                    if new_dist < self.restart_tour_cost:
-                        self.restart_tour = new_tour[:]
+                    if new_dist < self.restart_tour_cost:  # better global solution is found
+                        self.restart_tour = self.best_soln[:]
                         self.restart_tour_cost = new_dist
                         self.best_soln_quality = time.time() - self.start_time
                         self.trace_list.append(('%.4f' % self.best_soln_quality, self.restart_tour_cost))
@@ -76,7 +77,7 @@ class SimulatedAnnealing:
                     diff = self.path_cost - new_dist
                     prob = math.exp(float(diff) / float(T))
                     if prob > random.uniform(0, 1):
-                        self.best_soln = new_tour[:]
+                        self.best_soln = self.swap_tour(start_ind, end_ind)
                         self.path_cost = new_dist
 
                 T *= self.cooling_factor
@@ -87,9 +88,7 @@ class SimulatedAnnealing:
             self.path_cost = new_cost
 
             decrease_T_factor *= 0.8
-
             time.sleep(1)  # prevent CPU hogging
-
             duration = time.time() - self.start_time  # update timer
 
         return self.best_soln, self.path_cost, self.trace_list
@@ -98,7 +97,7 @@ class SimulatedAnnealing:
         """Generate a random tour at initialization"""
 
         num_cities = self.n
-        tour = [i for i in range(num_cities)]
+        tour = [i for i in xrange(num_cities)]
 
         random.seed(self.seed)
         random.shuffle(tour)
@@ -135,7 +134,7 @@ def calculate_init_distance(tour, adj_matrix):
     num_cities = adj_matrix.shape[0]
 
     dist = 0.0
-    for i in range(num_cities):
+    for i in xrange(num_cities):
         curr_city = tour[i]
         next_city = tour[i+1]
         dist += adj_matrix[curr_city, next_city]
@@ -157,16 +156,18 @@ def update_distance(old_distance, old_tour, adj_matrix, start, end):
     return new_distance
 
 
+# For debugging
 def print_path(input_path, input_cost):
     print('The shortest TSP path found is: ' + str(input_path[0])),
 
-    for i in range(1, len(input_path)):
+    for i in xrange(1, len(input_path)):
         print('-> ' + str(input_path[i])),
 
     print('\nThe total cost is ' + str(input_cost))
 
 
 if __name__ == "__main__":
+    """Main function"""
 
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)
