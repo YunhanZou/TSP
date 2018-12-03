@@ -7,6 +7,13 @@ from Node import Node
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
 
+"""
+Author: Yunhan Zou, Henghao Li
+CSE 6140, Fall 2018, Georgia Tech
+
+The branch and bound algorithm to solve TSP problem.
+"""
+
 
 class BranchNBound:
     """Class to implement Branch and Bound algorithm"""
@@ -24,7 +31,7 @@ class BranchNBound:
 
         self.time_limit = time_limit  # time limit in sec
 
-        self.preprocess_cost_matrix()  # Set diagonal elements to infinity
+        self.preprocess_cost_matrix()  # set diagonal elements to infinity
 
         reduced_matrix = np.copy(self.cost_matrix)
         cost, reduced_matrix = reduce_matrix(reduced_matrix)
@@ -76,7 +83,6 @@ class BranchNBound:
             if cost_so_far >= self.upper_bound:
                 # The shortest path in pq on this level has a lower bound larger than the upper bound
                 # so we can prune all the partial solutions on this level
-                # print("Prune this level", current_level, self.pqs[current_level].size(), cost_so_far, self.upper_bound)
                 self.pqs[current_level].clear()
 
             else:
@@ -89,8 +95,6 @@ class BranchNBound:
 
                 # A solution is found
                 if current_level == self.n-1:
-                    # print('A solution is found, '),
-                    # print('duration: ' + str(duration) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(cost_so_far))
                     self.upper_bound = cost_so_far
                     self.best_path = path_so_far
                     self.best_soln_quality = duration
@@ -123,12 +127,13 @@ class BranchNBound:
         self.best_path.append(0)  # append the start city
 
         print('Duration: ' + str(self.best_soln_quality) + ', time limit: ' + str(self.time_limit) + ', new distance: ' + str(self.upper_bound))
+        print('BnB complete.')
 
         return self.best_path, self.upper_bound, self.trace_list
 
 
 def initiate_greedy_path(adj_matrix):
-    """Greedy method to initialize the best route and upper bound to prune more trees."""
+    """Greedy method to initialize the best route so more trees can be pruned."""
 
     path = [0]
     cost = 0
@@ -181,6 +186,8 @@ def reduce_matrix(reduced_matrix):
 
 
 def set_row_col_inf(reduced_matrix, i, j):
+    """Given start and end index i and j, set i-th row, j-th col and [j,i] to inf, indicating visited"""
+
     reduced_matrix[i, :] = float('inf')
     reduced_matrix[:, j] = float('inf')
     reduced_matrix[j, i] = float('inf')
@@ -196,6 +203,7 @@ def print_path(input_path):
 
 
 if __name__ == "__main__":
+    """Main function"""
 
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)
@@ -205,5 +213,5 @@ if __name__ == "__main__":
     bnb = BranchNBound(adj_mat, dim, cut_off_sec)
     path, cost, quality = bnb.run_branch_and_bound()
 
-    output.solution([cost] + path)
-    output.sol_trace([(quality, cost)])
+    output.solution([cost] + path)  # generate solution file
+    output.sol_trace(quality)  # generate solution trace file
