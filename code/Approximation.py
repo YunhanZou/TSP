@@ -67,9 +67,11 @@ def compute_nx(d, input):
 
     return c, tour
 
-
+# return none if cut_off_sec exceeded
 # O(d^2)
-def MST(d, input, root):
+def MST(d, input, root, cut_off_sec):
+    start_time = time.time()
+
     mst = np.zeros(d)
     mst[root] = root
 
@@ -78,6 +80,10 @@ def MST(d, input, root):
     visited = np.zeros(d)
 
     while not np.all(visited):
+        cur_time = time.time()
+        if cur_time - start_time > cut_off_sec:
+            return None
+
         if np.sum(visited) == 0:
             u = root
         else:
@@ -92,11 +98,12 @@ def MST(d, input, root):
 
     return mst
 
-
+# return none if cut_off_sec exceeded
 # O(d^2)
-def DFS(d, mst, root):
-    assert len(mst) == d
-    assert mst[root] == root
+def DFS(d, mst, root, cut_off_sec):
+    start_time = time.time()
+    # assert len(mst) == d
+    # assert mst[root] == root
 
     tsp = []
     stack = [root]
@@ -104,6 +111,10 @@ def DFS(d, mst, root):
     visited[root] = 1
 
     while len(stack):
+        cur_time = time.time()
+        if cur_time - start_time > cut_off_sec:
+            return None
+
         cur = stack.pop()
         tsp.append(cur)
 
@@ -116,9 +127,16 @@ def DFS(d, mst, root):
     return tsp
 
 # O(d^2)
-def compute(d, input, root=0):
-    mst = MST(d, input, root)
-    tsp = DFS(d, mst, root)
+def compute(d, input, root=0, cut_off_sec=10):
+    c, tsp = -1, []
+    start_time = time.time()
+    mst = MST(d, input, root, cut_off_sec)
+    if mst is None:
+        return c, tsp
+    cur_time = time.time()
+    tsp = DFS(d, mst, root, cut_off_sec - (cur_time - start_time))
+    if tsp is None:
+        return c, tsp
     c = np.sum([input[tsp[i]][tsp[i + 1]] for i in range(d)])
     return c, tsp
 
@@ -209,7 +227,7 @@ if __name__ == "__main__":
         output = Output(filename, algorithm, cut_off_sec)
 
         start_MST = time.time()
-        c, tour = compute(dim, adj_mat)  # todo cut_off_sec
+        c, tour = compute(dim, adj_mat)
         end_MST = time.time()
 
         output.solution([c] + tour)

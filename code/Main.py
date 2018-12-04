@@ -24,7 +24,7 @@ def main():
         output = Output(filename, algorithm, cut_off_sec, algorithm)  # init output object
 
         start_MST = time.time()
-        c, tour = compute(dim, adj_mat)  # TODO: add cut_off_sec
+        c, tour = compute(dim, adj_mat, cut_off_sec)
         total_time = time.time() - start_MST
 
         output.solution([c] + tour)  # generate solution file
