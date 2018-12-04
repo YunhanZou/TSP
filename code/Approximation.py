@@ -1,4 +1,11 @@
 """
+Author: Wenting Tan
+CSE 6140, Fall 2018, Georgia Tech
+
+The MST approximation algorithm to solve TSP problem.
+"""
+
+"""
 install networkx version 2.2 through terminal:
 python -m pip install --upgrade pip
 python -m pip install networkx

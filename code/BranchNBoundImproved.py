@@ -1,3 +1,10 @@
+"""
+Author: Yunhan Zou, Henghao Li
+CSE 6140, Fall 2018, Georgia Tech
+
+The branch and bound algorithm to solve TSP problem.
+"""
+
 import numpy as np
 import time
 import copy
@@ -6,13 +13,6 @@ from PriorityQueue import PriorityQueue
 from Node import Node
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
-
-"""
-Author: Yunhan Zou, Henghao Li
-CSE 6140, Fall 2018, Georgia Tech
-
-The branch and bound algorithm to solve TSP problem.
-"""
 
 
 class BranchNBound:

@@ -1,3 +1,10 @@
+"""
+Author: Xia Wu
+CSE 6140, Fall 2018, Georgia Tech
+
+Main file of this project
+"""
+
 from Input import format_check, parse_input, adjacency_mat, write_adj_mat_file
 from Output import Output
 from Approximation import compute

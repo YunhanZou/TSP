@@ -1,3 +1,10 @@
+"""
+Author: Xia Wu
+CSE 6140, Fall 2018, Georgia Tech
+
+Parse Input tsp files
+"""
+
 import sys
 import getopt
 import math
@@ -81,16 +88,13 @@ def parse_input(f_name):
             dim = int(val.lstrip())
         elif head == 'EDGE_WEIGHT_TYPE':
             edge_weight_type = val.lstrip()
-    # print len(content)
-    # print city, dim
-    # print content
+
     coord = [(0, 0) for i in range(dim)]  # Note actual index starts at 1
     for line in content:
         l = line.strip()  # remove trailing and leading spaces
         idx, x, y = l.split(' ')
         idx = int(idx) - 1  # index of matrix start from 0
         coord[idx] = (float(x), float(y))
-    # print coord
 
     fh.close()
 
@@ -103,20 +107,16 @@ def euc_2d(coord1, coord2):
     xd = x1 - x2
     yd = y1 - y2
     dist = math.sqrt(xd * xd + yd * yd)
-    # print dist
-    # print int(round(dist))
+
     return int(round(dist))  # round to nearest integer
 
 
 def covert_radian(x, y):
     PI = 3.141592
     deg_x, deg_y = int(x), int(y)
-    # print deg_x, deg_y
     min_x, min_y = x - deg_x, y - deg_y
-    # print min_x, min_y
     latitude = PI * (deg_x + 5.0 * min_x / 3.) / 180.
     longitude = PI * (deg_y + 5.0 * min_y / 3.) / 180.
-    # print latitude, longitude
 
     return latitude, longitude
 
@@ -124,17 +124,12 @@ def covert_radian(x, y):
 def geo(coord1, coord2):
     lat1, long1 = coord1
     lat2, long2 = coord2
-    # print
-    # print lat1, long1
-    # print lat2, long2
 
     RRR = 6378.388
     q1 = math.cos(long1 - long2)
     q2 = math.cos(lat1 - lat2)
     q3 = math.cos(lat1 + lat2)
     dist = int(RRR * math.acos(0.5 * ((1. + q1) * q2 - (1. - q1) * q3)) + 1.)
-    # print
-    # print RRR * math.acos(0.5 * ((1. + q1) * q2 - (1. - q1) * q3)) + 1., dist
 
     return dist
 
@@ -153,7 +148,6 @@ def adjacency_mat(dim, edge_weight_type, coord):
             # print adj_mat[i]
     elif edge_weight_type == 'GEO':
         randian = coord[:]
-        # print randian
         for i in range(len(randian)):
             randian[i] = covert_radian(randian[i][0], randian[i][1])
         for i in range(len(randian)):
@@ -162,9 +156,6 @@ def adjacency_mat(dim, edge_weight_type, coord):
                     adj_mat[i][j] = geo(randian[i], randian[j])
                 else:
                     adj_mat[i][j] = adj_mat[j][i]
-                # print adj_mat[i][j]
-            # print
-            # print adj_mat[i]
 
     return adj_mat
 
@@ -179,6 +170,7 @@ def write_adj_mat_file(adj_mat, city, dim):
     f.close()
 
 
+# Usage example
 def main():
     filename, algorithm, cut_off_sec, random_seed = format_check()
     city, dim, edge_weight_type, coord = parse_input(filename)

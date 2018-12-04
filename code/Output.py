@@ -1,3 +1,10 @@
+"""
+Author: Xia Wu
+CSE 6140, Fall 2018, Georgia Tech
+
+Parse Output solution and trace files
+"""
+
 class Output(object):
     def __init__(self, filename, method, cutoff, algo, rand_seed=None):
         dir, filename = filename.split("/")

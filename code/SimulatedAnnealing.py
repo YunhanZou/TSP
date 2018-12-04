@@ -1,3 +1,11 @@
+"""
+Author: Yunhan Zou
+CSE 6140, Fall 2018, Georgia Tech
+
+The simulated annealing algorithm to solve TSP problem.
+"""
+
+
 import math
 import random
 import time
@@ -7,13 +15,6 @@ import numpy as np
 
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
-
-"""
-Author: Yunhan Zou
-CSE 6140, Fall 2018, Georgia Tech
-
-The simulated annealing algorithm to solve TSP problem.
-"""
 
 
 class SimulatedAnnealing:

@@ -1,3 +1,10 @@
+"""
+Author: Henghao Li
+CSE 6140, Fall 2018, Georgia Tech
+
+The iterated local search algorithm to solve TSP problem.
+"""
+
 import numpy as np
 import time
 import random
@@ -333,11 +340,11 @@ def run_all_data():
 
             output = Output(filename, algorithm, cut_off_sec)
             ils = IteratedLocalSearch(adj_mat, dim, cut_off_sec, random_seed)
-            path, cost, quality = ils.iterated_local_search()
-            print path, cost, quality
+            path, cost, trace_list = ils.iterated_local_search()
+            print path, cost, trace_list
 
             output.solution([cost] + path)
-            output.sol_trace([(quality, cost)])
+            output.sol_trace(trace_list)
 
 if __name__ == "__main__":
     run_all_data()
