@@ -43,7 +43,7 @@ def box_plots_data(seeds, cities, optimal_vals, q_stars, algo):
     for c in range(len(cities)):
         print
         print "city: ", cities[c]
-        if cities[c] == 'Roanoke':
+        if algo =='LS2' and cities[c] == 'Roanoke':
             traces, times = read_files(seeds, cities[c], algo)
             optimal_val = optimal_vals[c]
             q_star = q_stars[-1]
@@ -56,7 +56,7 @@ def box_plots_data(seeds, cities, optimal_vals, q_stars, algo):
                         break
             print len(times_boxplot)
             print times_boxplot
-            with open("plots/box_plot/boxplot_data_Roanoke.csv", "wb") as f:
+            with open("plots/box_plot/boxplot_data_" + str(algo) + "_Roanoke.csv", "wb") as f:
                 writer = csv.writer(f)
                 writer.writerows([['Roanoke']])
                 writer.writerows(times_boxplot)
@@ -82,7 +82,7 @@ def box_plots_data(seeds, cities, optimal_vals, q_stars, algo):
     t_times_boxplots = zip(*times_boxplots)  # transpose
     # print len(t_times_boxplots), len(t_times_boxplots[0])
 
-    with open("plots/box_plot/boxplot_data.csv", "wb") as f:
+    with open("plots/box_plot/boxplot_data_" + str(algo) + '.csv', "wb") as f:
         writer = csv.writer(f)
         writer.writerows([cities_abbr])
         writer.writerows(t_times_boxplots)
@@ -158,11 +158,11 @@ def qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, algo):
             plt.plot(plot_times, p_solve, label=label)  # plot line of current p* of this city
 
         plt.legend()
-        plt.title('QRTD of city ' + str(cities[c]))
+        plt.title('QRTD of city ' + str(cities[c]) + 'with algorithm' + str(algo))
         plt.xlabel('Run-time (seconds)')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)
-        plot_name = 'plots/QRTD/' + str(cities[c]) + '_QRTD.png'
+        plot_name = 'plots/QRTD/' + str(cities[c]) + '_' + str(algo) + '_QRTD.png'
         plt.savefig(plot_name)
 
         # plot SQD
@@ -184,11 +184,11 @@ def qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, algo):
             t_sqd = len(plot_times) // pow(2, step)
             step -= 1
         plt.legend()
-        plt.title('SQD of city ' + str(cities[c]))
+        plt.title('SQD of city ' + str(cities[c]) + 'with algorithm' + str(algo))
         plt.xlabel('Relative Solution Quality [%]')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)
-        plot_name_sqd = 'plots/SQD/' + str(cities[c]) + '_SQD.png'
+        plot_name_sqd = 'plots/SQD/' + str(cities[c]) + '_' + str(algo) + '_SQD.png'
         plt.savefig(plot_name_sqd)
 
 
@@ -198,14 +198,10 @@ def main():
     optimal_vals = [277952, 62962, 6859, 2003763, 1395981, 893536, 7542, 52643, 1555060, 100431, 810196, 132709, 1176151, 655454]
     q_stars = [0., 0.5, 1., 1.5, 2., 2.5, 3.]  # relative solution quality q*[%]
 
-    # cities = ['Atlanta']
-    # optimal_vals = [2003763]
-    # q_stars = [0., 0.5]  # relative solution quality q*[%]
-
-    # box_plots_data(seeds, cities, optimal_vals, q_stars, 'LS1')
+    box_plots_data(seeds, cities, optimal_vals, q_stars, 'LS1')
     box_plots_data(seeds, cities, optimal_vals, q_stars, 'LS2')
 
-    # qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, 'LS1')
+    qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, 'LS1')
     qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, 'LS2')
 
 
