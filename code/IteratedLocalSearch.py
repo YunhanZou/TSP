@@ -215,6 +215,8 @@ class IteratedLocalSearch:
 
         # Perform local search once to get the first best path
         best_path, best_cost, duration = self.twoopt.two_opt()
+        timestamp = duration / 1000.0
+        self.trace_list.append(('%.4f' % timestamp, best_cost))  # init trace of the first path
         count = 1
 
         # Iteratively improve using perturbation
@@ -225,7 +227,7 @@ class IteratedLocalSearch:
                 break
             else:
                 count += 1
-                # Pertubate and restart local search
+                # Perturbate and restart local search
                 self.double_bridge_perturbation()
                 new_path, new_cost, duration = self.twoopt.two_opt()
                 if new_cost < best_cost:
