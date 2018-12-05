@@ -15,6 +15,7 @@ import time
 
 
 def main():
+    random_seed = 0
     filename, algorithm, cut_off_sec, random_seed = format_check()  # check input format
     city, dim, edge_weight_type, coord = parse_input(filename)  # parse input information
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
