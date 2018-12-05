@@ -31,7 +31,7 @@ random_seed is only applicable when the method of choice is local search, i.e. L
 File format: <br />
 * Each line contains timestamp in seconds and quality of the best found solution at that point in time
 
-## Run Main function
+## Run Executable
 Make sure in TSP folder. In your terminal, type command as following:
 ### GNU
 ```
