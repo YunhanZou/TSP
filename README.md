@@ -1,5 +1,5 @@
 wtan64:
-For the code to run on Ubuntu 18.04
+For the code to run on Ubuntu 18.04 <br />
 sudo apt install build-essential
 sudo apt install default-jdk
 sudo apt install python
