@@ -22,7 +22,7 @@ class SimulatedAnnealing:
     def __init__(self, cost_mat, dim, start_T, end_T, cooling_factor, seed, time_limit):
         self.cost_mat = np.asarray(cost_mat)
         self.n = dim
-        self.seed = int(seed)
+        self.seed = seed
         self.start_T = start_T
         self.end_T = end_T
         self.cooling_factor = cooling_factor
