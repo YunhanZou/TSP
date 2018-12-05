@@ -15,7 +15,6 @@ import time
 
 
 def main():
-    random_seed = 0
     filename, algorithm, cut_off_sec, random_seed = format_check()  # check input format
     city, dim, edge_weight_type, coord = parse_input(filename)  # parse input information
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
@@ -41,7 +40,7 @@ def main():
         output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS1':  # Iterated LocalSearch
-        output = Output(filename, algorithm, cut_off_sec, algorithm, int(random_seed))  # init output object
+        output = Output(filename, algorithm, cut_off_sec, algorithm, random_seed)  # init output object
 
         ils = ILS(adj_mat, dim, cut_off_sec, random_seed)  # param: dist_matrix, num_city, time_limit, random_seed
         path, cost, trace_list = ils.iterated_local_search()
@@ -50,7 +49,7 @@ def main():
         output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS2':  # Simulated Annealing
-        output = Output(filename, algorithm, cut_off_sec, algorithm, int(random_seed))  # init output object
+        output = Output(filename, algorithm, cut_off_sec, algorithm, random_seed)  # init output object
 
         sa = SA(adj_mat, dim, 1e30, 1, 0.999, random_seed, cut_off_sec)
         path, cost, trace_list = sa.run_simulated_annealing()
