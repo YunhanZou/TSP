@@ -50,20 +50,3 @@ Example running .tsp with local search 1 algorithm with cutoff time 100 seconds 
 ```
 python code/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
 ```
-
-## Run input sample
-Make sure in TSP folder. In your terminal, type command as following:
-### GNU
-```
-python code/Input.py --inst <filename> --alg [BnB | Approx | LS1 | LS2] --time <cutoff_in_seconds> [--seed <random_seed>]
-```
-### Unix
-```
-python code/Input.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_seconds> [-s <random_seed>]
-```
-
-## Run output sample
-Make sure in TSP folder. In your terminal, type command as following:
-```
-python code/Output.py
-```
