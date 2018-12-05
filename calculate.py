@@ -17,7 +17,7 @@ if __name__ == "__main__":
         time_qual = dict()
         for i in filenames:
             lines = []
-            r = i +"_"+alg+"_600_(.*).trace"
+            r = i +"_"+alg+"(.*).trace"
             for j in os.listdir("output/"+alg+"/"):
                 matchObj = re.match(r, j)
                 if matchObj:
