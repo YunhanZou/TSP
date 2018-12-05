@@ -31,13 +31,11 @@ Example running .tsp with local search 1 algorithm with cutoff time 100 seconds 
 python code/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
 ```
 
-## Data
-All original data stored in DATA folder
-
-## Input matrix
-Stored as csv file in input folder. (No need to read file when computing, only stored for plotting simplicity)
+## Input
+All original data stored in 'DATA' folder
 
 ## Output
+All solution and trace files are stored in 'output' folder.
 ### Solution files
 File name: `<instance>_<method>_<cutoff>[_<random_seed>].sol` <br />
 random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
@@ -50,3 +48,13 @@ File name: `<instance>_<method>_<cutoff>[_<random_seed>].trace` <br />
 random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
 File format: <br />
 * Each line contains timestamp in seconds and quality of the best found solution at that point in time
+
+## Other folders
+### optimal_output
+Exact optimal solutions found online.
+### input
+Intermediate store for plotting simplicity.
+### code
+All implementation.
+### plots
+All plots generated for report purpose.
