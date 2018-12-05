@@ -22,6 +22,8 @@ def main():
 
     if random_seed == None:
         random_seed = 0
+    else:
+        random_seed = int(random_seed)
 
     if algorithm == 'Approx':
         output = Output(filename, algorithm, cut_off_sec, algorithm)  # init output object
