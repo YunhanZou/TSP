@@ -1,18 +1,15 @@
-wtan64:
+# TSP
+CSE 6140 Final Project
+
+## Required
 For the code to run on Ubuntu 18.04 <br />
+```
 sudo apt install build-essential
 sudo apt install default-jdk
 sudo apt install python
 sudo apt install python-numpy
 sudo apt install python-matplotlib
-
-# TSP
-CSE 6140 Final Project
-
-## Required
-Python version: 2.7 <br />
-networkx==2.2 <br />
-numpy==1.13.3
+```
 
 ## Data
 All original data stored in DATA folder
@@ -69,25 +66,4 @@ python code/Input.py -i <filename> -a [BnB | Approx | LS1 | LS2] -t <cutoff_in_s
 Make sure in TSP folder. In your terminal, type command as following:
 ```
 python code/Output.py
-```
-
-## Run Approx
-install networkx version 2.2 through terminal:
-```
-python -m pip install --upgrade pip
-python -m pip install networkx
-```
-
-Switch mode by modifying code/Approximation.py as follow: <br />
-'False' To generate outputs:
-(generated in output folder)  <br />
-Make sure in TSP folder
-```
-./run_Approx.sh
-```
-'True' To generate graphs:
-(currently: rel_time vs dim)  <br />
-Make sure in TSP folder
-```
-python code/Approximation.py
 ```
