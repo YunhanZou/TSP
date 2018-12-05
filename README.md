@@ -11,26 +11,6 @@ sudo apt install python-numpy
 sudo apt install python-matplotlib
 ```
 
-## Data
-All original data stored in DATA folder
-
-## Input matrix
-Stored as csv file in input folder. (No need to read file when computing, only stored for plotting simplicity)
-
-## Output
-### Solution files
-File name: `<instance>_<method>_<cutoff>[_<random_seed>].sol` <br />
-random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
-File format: <br />
-* line 1: best quality
-* line 2: list of vertex IDs of the TSP tour
-
-### Solution trace files
-File name: `<instance>_<method>_<cutoff>[_<random_seed>].trace` <br />
-random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
-File format: <br />
-* Each line contains timestamp in seconds and quality of the best found solution at that point in time
-
 ## Run Executable
 Make sure in TSP folder. In your terminal, type command as following:
 ### GNU
@@ -50,3 +30,23 @@ Example running .tsp with local search 1 algorithm with cutoff time 100 seconds 
 ```
 python code/Main.py --inst DATA/Cincinnati.tsp --alg LS1 --time 100 -seed 12345
 ```
+
+## Data
+All original data stored in DATA folder
+
+## Input matrix
+Stored as csv file in input folder. (No need to read file when computing, only stored for plotting simplicity)
+
+## Output
+### Solution files
+File name: `<instance>_<method>_<cutoff>[_<random_seed>].sol` <br />
+random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
+File format: <br />
+* line 1: best quality
+* line 2: list of vertex IDs of the TSP tour
+
+### Solution trace files
+File name: `<instance>_<method>_<cutoff>[_<random_seed>].trace` <br />
+random_seed is only applicable when the method of choice is local search, i.e. LS1 or LS2 <br />
+File format: <br />
+* Each line contains timestamp in seconds and quality of the best found solution at that point in time
