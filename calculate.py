@@ -11,9 +11,9 @@ if __name__ == "__main__":
 
         dir = "DATA/"
         alg = "LS1"
-        filenames = set()
+        filenames = []
         for filename in os.listdir(dir):
-            filenames.add(filename.split(".")[0])
+            filenames.append(filename.split(".")[0])
         time_qual = dict()
         for i in filenames:
             lines = []
@@ -27,9 +27,9 @@ if __name__ == "__main__":
                         lines.append((float(time), float(qual)))
             time_qual[i] = tuple(lines)
 
-        for i in time_qual:
+        for i in filenames:
             # print i, time_qual[i]
             a = np.array(time_qual[i])
             b = np.average(a, axis=0)
             print i
-            print b
+            print float(b[0]), float(b[1])
