@@ -6,7 +6,7 @@ Parse Output solution and trace files
 """
 
 class Output(object):
-    def __init__(self, filename, method, cutoff, algo, rand_seed=None):
+    def __init__(self, filename, method, cutoff, algo, rand_seed=0):
         dir, filename = filename.split("/")
         inst, suffix = filename.split(".")
         # print inst, method, cutoff
