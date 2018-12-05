@@ -1,14 +1,18 @@
+"""
+Author: Yunhan Zou
+CSE 6140, Fall 2018, Georgia Tech
+
+A queue structure implemented using heapq where each element is served in order of priority.
+
+Used to store node object, and define priority to be their cost_so_far.
+
+Each tuple stored in the queue has (priority, count, node), and node contains node information.
+"""
+
 import heapq
 
 
 class PriorityQueue:
-    """
-    A queue structure implemented using heapq where each element is served in order of priority.
-
-    Used to store node object, and define priority to be their cost_so_far.
-
-    Each tuple stored in the queue has (priority, count, node), and node contains node information.
-    """
 
     def __init__(self):
         self.queue = []

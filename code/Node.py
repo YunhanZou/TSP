@@ -1,5 +1,11 @@
+"""
+Author: Yunhan Zou
+CSE 6140, Fall 2018, Georgia Tech
+
+Class to represent a single node in a search-space tree
+"""
+
 class Node:
-    """Class to represent a single node in a search-space tree"""
 
     def __init__(self, reduced_matrix, cost, path_so_far, visited):
         self.reduced_matrix = reduced_matrix
