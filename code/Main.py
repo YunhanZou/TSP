@@ -20,6 +20,9 @@ def main():
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
     write_adj_mat_file(adj_mat, city, dim)  # save input matrix as csv
 
+    if random_seed == None:
+        random_seed = 0
+
     if algorithm == 'Approx':
         output = Output(filename, algorithm, cut_off_sec, algorithm)  # init output object
 
