@@ -14,6 +14,7 @@ import sys
 import time
 import os
 import bisect
+import csv
 
 
 def read_files(seeds, city, algo):
@@ -24,7 +25,6 @@ def read_files(seeds, city, algo):
         f_name = path + str(city) + '_' + str(algo) + '_600_' + str(seed) + '.trace'
         fh = open(f_name, 'r')
         lines = fh.read().splitlines()
-        # print lines
         trace, time = [], []
         for i in range(len(lines)):
             line = lines[i].split(',')
@@ -34,27 +34,67 @@ def read_files(seeds, city, algo):
         traces.append(trace)
         times.append(time)
 
-    # t = np.zeros([len(traces), len(max(traces, key=lambda x: len(x)))])
-    # for i, j in enumerate(traces):
-    #     t[i][0:len(j)] = j
-
     return traces, times
 
 
-def main():
-    seeds = [12345, 35313, 45631, 90593, 2935812, 2523643, 3496034, 425, 634506, 540963]
-    cities = ['Atlanta', 'Berlin', 'Boston', 'Champaign', 'Cincinnati', 'Denver', 'NYC', 'Philadelphia', 'Roanoke', 'SanFrancisco', 'Toronto', 'UKansasState', 'ulysses16', 'UMissouri']
-    optimal_vals = [2003763, 7542, 893536, 52643, 277952, 100431, 1555060, 1395981, 655454, 810196, 1176151, 62962, 6859, 132709]
-    q_stars = [0., 0.5, 1., 1.5, 2., 2.5, 3.]  # relative solution quality q*[%]
-
-    # cities = ['Boston']
-    # optimal_vals = [893536]
-    # q_stars = [0., 0.5]  # relative solution quality q*[%]
-
+def box_plots_data(seeds, cities, optimal_vals, q_stars, algo):
+    cities_abbr = []
+    times_boxplots = []
     for c in range(len(cities)):
-        traces, times = read_files(seeds, cities[c], 'LS1')
+        print
+        print "city: ", cities[c]
+        if algo =='LS2' and cities[c] == 'Roanoke':
+            traces, times = read_files(seeds, cities[c], algo)
+            optimal_val = optimal_vals[c]
+            q_star = q_stars[-1]
+            accept_quality = optimal_val * (1 + q_star)
+            times_boxplot = []
+            for trace in traces:
+                for i in range(len(trace)):
+                    if trace[i][1] <= accept_quality:
+                        times_boxplot.append([float(trace[i][0])])
+                        break
+            print len(times_boxplot)
+            print times_boxplot
+            with open("plots/box_plot/boxplot_data_" + str(algo) + "_Roanoke.csv", "wb") as f:
+                writer = csv.writer(f)
+                writer.writerows([['Roanoke']])
+                writer.writerows(times_boxplot)
+
+            continue
+
+        cities_abbr.append(cities[c][:3])
+        traces, times = read_files(seeds, cities[c], algo)
+
         optimal_val = optimal_vals[c]
-        t_max = max([times[k][-1] for k in range(len(times))])  # maximum times in all trace files of this city
+        q_star = q_stars[-1]
+        accept_quality = optimal_val * (1 + q_star)
+        times_boxplot = []
+        for trace in traces:
+            for i in range(len(trace)):
+                if trace[i][1] <= accept_quality:
+                    times_boxplot.append(float(trace[i][0]))
+                    break
+        print len(times_boxplot)
+        print times_boxplot
+        times_boxplots.append(times_boxplot)
+
+    t_times_boxplots = zip(*times_boxplots)  # transpose
+    # print len(t_times_boxplots), len(t_times_boxplots[0])
+
+    with open("plots/box_plot/boxplot_data_" + str(algo) + '.csv', "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows([cities_abbr])
+        writer.writerows(t_times_boxplots)
+
+
+def qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, algo):
+    for c in range(len(cities)):
+        traces, times = read_files(seeds, cities[c], algo)
+        optimal_val = optimal_vals[c]
+        max_all_times = [times[k][-1] for k in range(len(times))]
+        t_max = max(max_all_times)  # maximum times in all trace files of this city
+
         all_p_solve = []
         print
         print "--QRTD--"
@@ -66,7 +106,7 @@ def main():
         plt.figure(figsize=(20, 10))
         for q_star_plot in q_stars:
             q_star = q_star_plot / 100.
-            accepet_quality = optimal_val * (1 + q_star)  # compute relative solution quality
+            accept_quality = optimal_val * (1 + q_star)  # compute relative solution quality
             # print
             # print "q *: "
             # print q_star
@@ -81,28 +121,24 @@ def main():
                 flag = []
                 for i in range(len(traces)):  # for each trace
                     ind = bisect.bisect(times[i], t)  # find the index of the smallest time that larger than given time t
-                    # print
-                    # print t, ind, times[i]
-                    # print traces[i]
-                    # print traces[i][ind]
                     if ind > 0 and len(traces[i]) > 1:
                         q_largest = traces[i][ind - 1][1]
                         quals.append(q_largest)
-                        if q_largest <= accepet_quality:  # solved
+                        if q_largest <= accept_quality:  # solved
                             flag.append(1)
                         else:
                             flag.append(0)
                     else:
                         q_largest = traces[i][0][1]
                         quals.append(q_largest)
-                        if q_largest <= accepet_quality:  # solved
+                        if q_largest <= accept_quality:  # solved
                             flag.append(1)
                         else:
                             flag.append(0)
                 best_quals.append(quals)
                 flags.append(flag)
                 t += 0.001  # step of time
-
+            #
             # print
             # print "timestamps to plot: "
             # print plot_times
@@ -122,11 +158,11 @@ def main():
             plt.plot(plot_times, p_solve, label=label)  # plot line of current p* of this city
 
         plt.legend()
-        plt.title('QRTD of city ' + str(cities[c]))
+        plt.title('QRTD of city ' + str(cities[c]) + ' with algorithm ' + str(algo))
         plt.xlabel('Run-time (seconds)')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)
-        plot_name = 'plots/QRTD/' + str(cities[c]) + '_QRTD.png'
+        plot_name = 'plots/QRTD/' + str(cities[c]) + '_' + str(algo) + '_QRTD.png'
         plt.savefig(plot_name)
 
         # plot SQD
@@ -148,14 +184,26 @@ def main():
             t_sqd = len(plot_times) // pow(2, step)
             step -= 1
         plt.legend()
-        plt.title('SQD of city ' + str(cities[c]))
+        plt.title('SQD of city ' + str(cities[c]) + ' with algorithm ' + str(algo))
         plt.xlabel('Relative Solution Quality [%]')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)
-        plot_name_sqd = 'plots/SQD/' + str(cities[c]) + '_SQD.png'
+        plot_name_sqd = 'plots/SQD/' + str(cities[c]) + '_' + str(algo) + '_SQD.png'
         plt.savefig(plot_name_sqd)
 
 
-if __name__ == '__main__':
+def main():
+    seeds = [12345, 35313, 45631, 90593, 2935812, 2523643, 3496034, 425, 634506, 540963]
+    cities = ['Cincinnati', 'UKansasState', 'ulysses16', 'Atlanta', 'Philadelphia', 'Boston', 'Berlin', 'Champaign', 'NYC', 'Denver', 'SanFrancisco', 'UMissouri', 'Toronto', 'Roanoke']
+    optimal_vals = [277952, 62962, 6859, 2003763, 1395981, 893536, 7542, 52643, 1555060, 100431, 810196, 132709, 1176151, 655454]
+    q_stars = [0., 0.5, 1., 1.5, 2., 2.5, 3.]  # relative solution quality q*[%]
 
+    box_plots_data(seeds, cities, optimal_vals, q_stars, 'LS1')
+    box_plots_data(seeds, cities, optimal_vals, q_stars, 'LS2')
+
+    qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, 'LS1')
+    qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, 'LS2')
+
+
+if __name__ == '__main__':
     main()
