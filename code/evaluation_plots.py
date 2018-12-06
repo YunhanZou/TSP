@@ -158,7 +158,7 @@ def qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, algo):
             plt.plot(plot_times, p_solve, label=label)  # plot line of current p* of this city
 
         plt.legend()
-        plt.title('QRTD of city ' + str(cities[c]) + 'with algorithm' + str(algo))
+        plt.title('QRTD of city ' + str(cities[c]) + ' with algorithm ' + str(algo))
         plt.xlabel('Run-time (seconds)')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)
@@ -184,7 +184,7 @@ def qrtd_sqd_plot(seeds, cities, optimal_vals, q_stars, algo):
             t_sqd = len(plot_times) // pow(2, step)
             step -= 1
         plt.legend()
-        plt.title('SQD of city ' + str(cities[c]) + 'with algorithm' + str(algo))
+        plt.title('SQD of city ' + str(cities[c]) + ' with algorithm ' + str(algo))
         plt.xlabel('Relative Solution Quality [%]')
         plt.ylabel('P (Solve)')
         plt.grid(linestyle='dashed', linewidth=1)

@@ -20,11 +20,16 @@ def main():
     adj_mat = adjacency_mat(dim, edge_weight_type, coord)  # input matrix
     write_adj_mat_file(adj_mat, city, dim)  # save input matrix as csv
 
+    if random_seed == None:
+        random_seed = 0
+    else:
+        random_seed = int(random_seed)
+
     if algorithm == 'Approx':
         output = Output(filename, algorithm, cut_off_sec, algorithm)  # init output object
 
         start_MST = time.time()
-        c, tour = compute(dim, adj_mat, cut_off_sec)
+        c, tour = compute(dim, adj_mat, cut_off_sec=cut_off_sec)
         total_time = time.time() - start_MST
 
         output.solution([c] + tour)  # generate solution file
@@ -40,7 +45,7 @@ def main():
         output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS1':  # Iterated LocalSearch
-        output = Output(filename, algorithm, cut_off_sec, algorithm, int(random_seed))  # init output object
+        output = Output(filename, algorithm, cut_off_sec, algorithm, random_seed)  # init output object
 
         ils = ILS(adj_mat, dim, cut_off_sec, random_seed)  # param: dist_matrix, num_city, time_limit, random_seed
         path, cost, trace_list = ils.iterated_local_search()
@@ -49,7 +54,7 @@ def main():
         output.sol_trace(trace_list)  # generate solution trace file
 
     elif algorithm == 'LS2':  # Simulated Annealing
-        output = Output(filename, algorithm, cut_off_sec, algorithm, int(random_seed))  # init output object
+        output = Output(filename, algorithm, cut_off_sec, algorithm, random_seed)  # init output object
 
         sa = SA(adj_mat, dim, 1e30, 1, 0.999, random_seed, cut_off_sec)
         path, cost, trace_list = sa.run_simulated_annealing()

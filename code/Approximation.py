@@ -13,7 +13,7 @@ python -m pip install networkx
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import networkx as nx
+# import networkx as nx
 import numpy as np
 import sys
 import time
@@ -21,7 +21,7 @@ import os
 from Output import Output
 from Input import format_check, parse_input, adjacency_mat
 
-
+"""
 # O(m log n) todo O(n^2)
 def computeMST_nx(g):
 
@@ -66,6 +66,7 @@ def compute_nx(d, input):
         break
 
     return c, tour
+"""
 
 # return none if cut_off_sec exceeded
 # O(d^2)
@@ -140,6 +141,7 @@ def compute(d, input, root=0, cut_off_sec=10):
     c = np.sum([input[tsp[i]][tsp[i + 1]] for i in range(d)])
     return c, tsp
 
+"""
 # O(d^3)
 def computeOpt(d, input):
     cs = []
@@ -150,7 +152,7 @@ def computeOpt(d, input):
         tsps.append(tsp)
     i = np.argmin(cs)
     return cs[i], tsps[i]
-
+"""
 
 if __name__ == "__main__":
     """
@@ -172,6 +174,7 @@ if __name__ == "__main__":
             print total_time # , "s"
             
     # O(m log n) --- n = 1000 ---> O(n^2)
+    """
     """
     if (True): # todo modify here to switch mode
         dims = []
@@ -233,3 +236,4 @@ if __name__ == "__main__":
         output.solution([c] + tour)
         total_time = (end_MST - start_MST)
         output.sol_trace([(total_time, 1)])
+    """
